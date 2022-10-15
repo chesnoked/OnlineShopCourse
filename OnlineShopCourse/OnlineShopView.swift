@@ -5,11 +5,11 @@
 //  Created by Evgeniy Safin on 15.10.2022.
 //
 
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        OnlineShopView()
-    }
-}
+//struct ContentView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        OnlineShopView()
+//    }
+//}
 
 import SwiftUI
 

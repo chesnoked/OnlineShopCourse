@@ -9,9 +9,11 @@ import SwiftUI
 
 @main
 struct OnlineShopCourseApp: App {
+    @StateObject private var shopVM: ShopViewModel = ShopViewModel()
     var body: some Scene {
         WindowGroup {
             OnlineShopView()
+                .environmentObject(shopVM)
         }
     }
 }
