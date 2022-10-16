@@ -34,4 +34,16 @@ struct ProductModel: Identifiable {
         self.image = image
     }
     
+    var data: [String:Any] {
+        var data: [String:Any] = [:]
+        data["id"] = id
+        data["article"] = article
+        data["brand"] = brand.rawValue
+        data["name"] = name
+        data["description"] = description
+        data["cost"] = cost
+        data["image"] = image
+        return data
+    }
+    
 }

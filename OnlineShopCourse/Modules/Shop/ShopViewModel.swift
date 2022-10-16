@@ -9,10 +9,24 @@ import Foundation
 
 class ShopViewModel: ObservableObject {
     
+    private let dataService = ProductDataService.shared
+    
     @Published var products: [ProductModel] = []
     
     init() {
         getProducts()
+    }
+    
+    // upload product data
+    func uploadProductData(product: ProductModel) {
+        dataService.uploadProductData(product: product) { result in
+            switch result {
+            case .success(let product):
+                print("Successfully uploaded product data: \(product.id)")
+            case .failure(let error):
+                print("Error uploading product data: \(product.id) : \(error.localizedDescription)")
+            }
+        }
     }
     
     private func getProducts() {
