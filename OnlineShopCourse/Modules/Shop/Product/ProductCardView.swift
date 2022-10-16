@@ -5,28 +5,70 @@
 //  Created by Evgeniy Safin on 16.10.2022.
 //
 
-struct ProductCardView_Previews: PreviewProvider {
-    static var previews: some View {
-        ProductCardView(product: ProductModel(image: "5"))
-    }
-}
+//struct ProductCardView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ProductCardView(product: ProductModel(image: "5"))
+//    }
+//}
 
 import SwiftUI
 
 struct ProductCardView: View {
     let product: ProductModel
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
+        VStack(alignment: .leading, spacing: 5) {
             // product image
-            Image(product.image)
-                .resizable()
-                .clipShape(RoundedRectangle(cornerRadius: 5))
-                .frame(width: Settings.shared.productCardSize, height: Settings.shared.productCardSize)
-            // product data
-            Text(product.id).lineLimit(1)
-                .font(.subheadline)
-                .foregroundColor(Color.palette.child.opacity(0.88))
-                .padding(.top, 5)
+            productImage
+                .padding(.bottom, 10)
+            // product article
+            productArticle
+            // product brand
+            productBrand
+            // product name
+            productName
+            // product cost
+            productCost
         }
+    }
+}
+
+extension ProductCardView {
+    // product image
+    private var productImage: some View {
+        Image(product.image)
+            .resizable()
+            .clipShape(RoundedRectangle(cornerRadius: 5))
+            .frame(width: Settings.shared.productCardSize, height: Settings.shared.productCardSize)
+    }
+    // product article
+    private var productArticle: some View {
+        Text(product.article)
+            .font(.caption)
+            .bold()
+            .foregroundColor(Color.palette.parent)
+            .padding(.horizontal, 5)
+            .background(Color.palette.child.cornerRadius(5))
+    }
+    // product brand
+    private var productBrand: some View {
+        Text(product.brand.rawValue)
+            .font(.caption)
+            .bold()
+            .foregroundColor(Color.palette.parent)
+            .padding(.horizontal, 5)
+            .background(Color.palette.child.cornerRadius(5))
+    }
+    // product name
+    private var productName: some View {
+        Text(product.name)
+            .font(.headline)
+            .foregroundColor(Color.palette.child)
+    }
+    // product cost
+    private var productCost: some View {
+        Text("\(product.cost.twoDecimalPlaces()) ₽")
+            .font(.callout)
+            .bold()
+            .foregroundColor(Color.palette.child)
     }
 }

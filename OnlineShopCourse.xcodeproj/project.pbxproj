@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9616106E28FBE80400E6823D /* ProductDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9616106D28FBE80400E6823D /* ProductDetailView.swift */; };
+		9616107028FBEB7000E6823D /* Double.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9616106F28FBEB7000E6823D /* Double.swift */; };
 		963BFBE528FB127200C7B182 /* ShopModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 963BFBE428FB127200C7B182 /* ShopModel.swift */; };
 		963BFBE728FB12E200C7B182 /* ShopViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 963BFBE628FB12E200C7B182 /* ShopViewModel.swift */; };
 		963BFBE928FB144E00C7B182 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 963BFBE828FB144E00C7B182 /* Settings.swift */; };
@@ -23,6 +25,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		9616106D28FBE80400E6823D /* ProductDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDetailView.swift; sourceTree = "<group>"; };
+		9616106F28FBEB7000E6823D /* Double.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Double.swift; sourceTree = "<group>"; };
 		963BFBE428FB127200C7B182 /* ShopModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopModel.swift; sourceTree = "<group>"; };
 		963BFBE628FB12E200C7B182 /* ShopViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopViewModel.swift; sourceTree = "<group>"; };
 		963BFBE828FB144E00C7B182 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
@@ -82,6 +86,7 @@
 			isa = PBXGroup;
 			children = (
 				963BFBEB28FB14DE00C7B182 /* ProductCardView.swift */,
+				9616106D28FBE80400E6823D /* ProductDetailView.swift */,
 			);
 			path = Product;
 			sourceTree = "<group>";
@@ -138,6 +143,7 @@
 			isa = PBXGroup;
 			children = (
 				9653592A28F9D39900DE06B4 /* ColorTheme.swift */,
+				9616106F28FBEB7000E6823D /* Double.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -216,7 +222,9 @@
 				9653592B28F9D39900DE06B4 /* ColorTheme.swift in Sources */,
 				9653592E28F9D46500DE06B4 /* HomeView.swift in Sources */,
 				9653591F28F9D30200DE06B4 /* OnlineShopView.swift in Sources */,
+				9616107028FBEB7000E6823D /* Double.swift in Sources */,
 				963BFBE928FB144E00C7B182 /* Settings.swift in Sources */,
+				9616106E28FBE80400E6823D /* ProductDetailView.swift in Sources */,
 				9653593028F9D48700DE06B4 /* ShopView.swift in Sources */,
 				963BFBE528FB127200C7B182 /* ShopModel.swift in Sources */,
 				9653593428F9D4A600DE06B4 /* ProfileView.swift in Sources */,

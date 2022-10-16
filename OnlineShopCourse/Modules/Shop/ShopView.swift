@@ -15,6 +15,7 @@ import SwiftUI
 
 struct ShopView: View {
     @EnvironmentObject private var shopVM: ShopViewModel
+    @State private var selectedProduct: ProductModel? = nil
     var body: some View {
         ZStack {
             // products
@@ -38,6 +39,12 @@ extension ShopView {
                       pinnedViews: []) {
                 ForEach(shopVM.products) { product in
                     ProductCardView(product: product)
+                        .onTapGesture {
+                            selectedProduct = product
+                        }
+                }
+                .sheet(item: $selectedProduct) { product in
+                    ProductDetailView(product: product)
                 }
             }
         }
