@@ -28,8 +28,11 @@ struct ProductDetailView: View {
                         // product article
                         productArticle
                         Spacer()
-                        // upload product data
-                        uploadProductData
+                        // delete product
+                        deleteProduct
+                            .padding(.trailing, 10)
+                        // upload product
+                        uploadProduct
                     }
                     // product brand
                     productBrand
@@ -97,15 +100,6 @@ extension ProductDetailView {
             .bold()
             .foregroundColor(Color.palette.child)
     }
-    // upload product data
-    private var uploadProductData: some View {
-        Button(action: {
-            shopVM.uploadProductData(product: product)
-        }, label: {
-            Image(systemName: "arrow.up")
-                .foregroundColor(Color.palette.child)
-        })
-    }
     // close button
     private var closeButton: some View {
         VStack(spacing: 0) {
@@ -118,6 +112,27 @@ extension ProductDetailView {
             })
         }
         .padding(.bottom)
+    }
+}
+
+extension ProductDetailView {
+    // upload product
+    private var uploadProduct: some View {
+        Button(action: {
+            shopVM.uploadProduct(product: product)
+        }, label: {
+            Image(systemName: "arrow.up")
+                .foregroundColor(Color.palette.child)
+        })
+    }
+    // delete product
+    private var deleteProduct: some View {
+        Button(action: {
+            shopVM.deleteProduct(product: product)
+        }, label: {
+            Image(systemName: "trash")
+                .foregroundColor(Color.palette.child)
+        })
     }
 }
 

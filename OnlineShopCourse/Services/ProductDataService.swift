@@ -24,11 +24,28 @@ class ProductDataService {
     
     // upload product data
     func uploadProductData(product: ProductModel, completion: @escaping (Result<ProductModel, Error>) -> Void) {
-        productsID.document(product.id).setData([:]) { error in
+        products.document(product.id).setData(product.data) { error in
             if let error = error {
                 completion(.failure(error))
             } else {
-                self.products.document(product.id).setData(product.data) { error in
+                self.productsID.document(product.id).setData([:]) { error in
+                    if let error = error {
+                        completion(.failure(error))
+                    } else {
+                        completion(.success(product))
+                    }
+                }
+            }
+        }
+    }
+    
+    // delete product data
+    func deleteProductData(product: ProductModel, completion: @escaping (Result<ProductModel, Error>) -> Void) {
+        productsID.document(product.id).delete { error in
+            if let error = error {
+                completion(.failure(error))
+            } else {
+                self.products.document(product.id).delete { error in
                     if let error = error {
                         completion(.failure(error))
                     } else {

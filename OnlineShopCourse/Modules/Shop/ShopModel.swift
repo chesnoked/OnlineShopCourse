@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 enum Brands: String {
     case brand1 = "Brand 1"
@@ -44,6 +45,10 @@ struct ProductModel: Identifiable {
         data["cost"] = cost
         data["image"] = image
         return data
+    }
+    
+    var imageData: Data {
+        return UIImage(named: image)!.jpegData(compressionQuality: 0.5)!
     }
     
 }

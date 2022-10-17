@@ -10,6 +10,7 @@ import Foundation
 class ShopViewModel: ObservableObject {
     
     private let dataService = ProductDataService.shared
+    private let imageService = ProductImageService.shared
     
     @Published var products: [ProductModel] = []
     
@@ -17,14 +18,36 @@ class ShopViewModel: ObservableObject {
         getProducts()
     }
     
-    // upload product data
-    func uploadProductData(product: ProductModel) {
-        dataService.uploadProductData(product: product) { result in
+    // upload product
+    func uploadProduct(product: ProductModel) {
+        imageService.uploadProductImage(product: product) { result in
             switch result {
             case .success(let product):
-                print("Successfully uploaded product data: \(product.id)")
+                self.dataService.uploadProductData(product: product) { result in
+                    switch result {
+                    case .success(let product):
+                        print("Successfully uploaded product: \(product.id)")
+                    case .failure(let error):
+                        print("Error uploading product: \(product.id) : \(error.localizedDescription)")
+                        // delete product
+                    }
+                }
             case .failure(let error):
-                print("Error uploading product data: \(product.id) : \(error.localizedDescription)")
+                // print
+                break
+            }
+        }
+    }
+    
+    // delete product
+    func deleteProduct(product: ProductModel) {
+        dataService.deleteProductData(product: product) { result in
+            switch result {
+            case .success(let product):
+                self.imageService.deleteProductImages(product: product)
+            case .failure(let error):
+                // print
+                break
             }
         }
     }
