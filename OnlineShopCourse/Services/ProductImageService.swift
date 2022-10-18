@@ -18,7 +18,21 @@ class ProductImageService {
         return storage.child("products")
     }
     
-    // upload product image
+    // MARK: download product image from Firebase Storage
+    func downloadProductImage(product: ProductModel, completion: @escaping (Result<UIImage, Error>) -> Void) {
+        images.child(product.id).child(product.id).getData(maxSize: 3 * 1024 * 1024) { data, error in
+            guard let data = data else {
+                if let error = error {
+                    completion(.failure(error))
+                }
+                return
+            }
+            guard let image = UIImage(data: data) else { return }
+            completion(.success(image))
+        }
+    }
+    
+    // MARK: upload product image to Firebase Storage
     func uploadProductImage(product: ProductModel, completion: @escaping (Result<ProductModel, Error>) -> Void) {
         let metadata = StorageMetadata()
         metadata.contentType = "image/jpg"
@@ -33,7 +47,7 @@ class ProductImageService {
         }
     }
     
-    // delete product images
+    // MARK: delete product images on Firebase Storage
     func deleteProductImages(product: ProductModel) {
         images.child(product.id).listAll { storageListResult, error in
             guard let list = storageListResult else {

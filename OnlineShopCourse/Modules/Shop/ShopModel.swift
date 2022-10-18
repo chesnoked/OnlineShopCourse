@@ -23,16 +23,22 @@ struct ProductModel: Identifiable {
     let name: String
     let description: String
     let cost: Double
-    let image: String
+    let imageFromAssets: String
+    let image: UIImage?
     
-    init(id: String = UUID().uuidString, article: String, brand: Brands, name: String, description: String, cost: Double, image: String) {
+    init(id: String = UUID().uuidString, article: String, brand: Brands, name: String, description: String, cost: Double, imageFromAssets: String, image: UIImage? = nil) {
         self.id = id
         self.article = article
         self.brand = brand
         self.name = name
         self.description = description
         self.cost = cost
+        self.imageFromAssets = imageFromAssets
         self.image = image
+    }
+    
+    init(product: ProductModel, productImage: UIImage) {
+        self.init(id: product.id, article: product.article, brand: product.brand, name: product.name, description: product.description, cost: product.cost, imageFromAssets: product.imageFromAssets, image: productImage)
     }
     
     var data: [String:Any] {
@@ -43,12 +49,12 @@ struct ProductModel: Identifiable {
         data["name"] = name
         data["description"] = description
         data["cost"] = cost
-        data["image"] = image
+        data["imageFromAssets"] = imageFromAssets
         return data
     }
     
     var imageData: Data {
-        return UIImage(named: image)!.jpegData(compressionQuality: 0.5)!
+        return UIImage(named: imageFromAssets)!.jpegData(compressionQuality: 0.5)!
     }
     
 }

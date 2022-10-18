@@ -58,7 +58,12 @@ extension ProductDetailView {
     // product images
     private var productImages: some View {
         TabView {
-            Image(product.image)
+            if let image = product.image {
+                Image(uiImage: image)
+            }
+            else {
+                Image(product.imageFromAssets)
+            }
         }
         .tabViewStyle(PageTabViewStyle())
         .frame(height: 300)
