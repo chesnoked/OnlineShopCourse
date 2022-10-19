@@ -97,6 +97,7 @@
 			isa = PBXGroup;
 			children = (
 				963BFBE228FB122C00C7B182 /* Shop */,
+				969DAFA02900068200788882 /* Profile */,
 			);
 			path = Modules;
 			sourceTree = "<group>";
@@ -165,7 +166,6 @@
 			children = (
 				9653592D28F9D46500DE06B4 /* HomeView.swift */,
 				9653593128F9D49600DE06B4 /* CartView.swift */,
-				9653593328F9D4A600DE06B4 /* ProfileView.swift */,
 			);
 			path = Pages;
 			sourceTree = "<group>";
@@ -177,6 +177,14 @@
 				9616106F28FBEB7000E6823D /* Double.swift */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		969DAFA02900068200788882 /* Profile */ = {
+			isa = PBXGroup;
+			children = (
+				9653593328F9D4A600DE06B4 /* ProfileView.swift */,
+			);
+			path = Profile;
 			sourceTree = "<group>";
 		};
 		96F4226028FC40950096E6F3 /* Services */ = {

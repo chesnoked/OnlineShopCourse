@@ -19,6 +19,7 @@ struct OnlineShopCourseApp: App {
         WindowGroup {
             OnlineShopView()
                 .environmentObject(shopVM)
+                .statusBarHidden(true)
         }
     }
 }
