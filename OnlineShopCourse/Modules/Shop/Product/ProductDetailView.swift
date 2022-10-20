@@ -70,40 +70,40 @@ extension ProductDetailView {
     }
     // product article
     private var productArticle: some View {
-        Text(product.article)
+        Text("ID: \(product.article)")
             .font(.caption)
             .bold()
-            .foregroundColor(Color.palette.parent)
-            .padding(.horizontal, 5)
-            .background(Color.palette.child.cornerRadius(5))
+            .foregroundColor(Color.palette.alternative)
+//            .padding(.horizontal, 5)
+//            .background(Color.palette.child.cornerRadius(5))
     }
     // product brand
     private var productBrand: some View {
-        Text(product.brand.rawValue)
+        Text("BRAND: \(product.brand.rawValue)")
             .font(.caption)
             .bold()
-            .foregroundColor(Color.palette.parent)
-            .padding(.horizontal, 5)
-            .background(Color.palette.child.cornerRadius(5))
+            .foregroundColor(Color.palette.alternative)
+//            .padding(.horizontal, 5)
+//            .background(Color.palette.child.cornerRadius(5))
     }
     // product name
     private var productName: some View {
         Text(product.name)
             .font(.headline)
-            .foregroundColor(Color.palette.child)
+            .foregroundColor(Color.palette.alternative)
     }
     // product description
     private var productDescription: some View {
         Text(product.description)
             .font(.subheadline)
-            .foregroundColor(Color.palette.child)
+            .foregroundColor(Color.palette.alternative)
     }
     // product cost
     private var productCost: some View {
         Text("\(product.cost.twoDecimalPlaces()) ₽")
             .font(.callout)
             .bold()
-            .foregroundColor(Color.palette.child)
+            .foregroundColor(Color.palette.alternative)
     }
     // close button
     private var closeButton: some View {
@@ -127,7 +127,7 @@ extension ProductDetailView {
             shopVM.uploadProduct(product: product)
         }, label: {
             Image(systemName: "arrow.up")
-                .foregroundColor(Color.palette.child)
+                .foregroundColor(Color.palette.alternative)
         })
     }
     // delete product
@@ -136,7 +136,7 @@ extension ProductDetailView {
             shopVM.deleteProduct(product: product)
         }, label: {
             Image(systemName: "trash")
-                .foregroundColor(Color.palette.child)
+                .foregroundColor(Color.palette.alternative)
         })
     }
 }

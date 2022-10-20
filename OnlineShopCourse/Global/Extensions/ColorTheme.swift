@@ -22,6 +22,7 @@ struct Palette {
     var child: Color {
         return myColorTheme.loadColor(forKey: "child_color") ?? Color("child")
     }
+    let alternative: Color = Color("alternative")
 }
 
 struct MyColorTheme {
