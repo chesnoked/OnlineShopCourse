@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-enum Brands: String {
+enum Brands: String, CaseIterable {
     case brand1 = "Brand 1"
     case brand2 = "Brand 2"
     case brand3 = "Brand 3"
@@ -57,4 +57,13 @@ struct ProductModel: Identifiable {
         return UIImage(named: imageFromAssets)!.jpegData(compressionQuality: 0.5)!
     }
     
+}
+
+struct NewProduct {
+    var brand: String = ""
+    var article: String = ""
+    var name: String = ""
+    var cost: String = ""
+    var description: String = ""
+    var images: [UIImage] = []
 }
