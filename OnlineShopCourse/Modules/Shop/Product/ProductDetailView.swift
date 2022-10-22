@@ -61,6 +61,8 @@ extension ProductDetailView {
             TabView {
                 ForEach(product.images, id: \.self) { image in
                     Image(uiImage: image)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
                 }
             }
             .tabViewStyle(PageTabViewStyle())
@@ -73,8 +75,6 @@ extension ProductDetailView {
             .font(.caption)
             .bold()
             .foregroundColor(Color.palette.alternative)
-//            .padding(.horizontal, 5)
-//            .background(Color.palette.child.cornerRadius(5))
     }
     // product brand
     private var productBrand: some View {
@@ -82,8 +82,6 @@ extension ProductDetailView {
             .font(.caption)
             .bold()
             .foregroundColor(Color.palette.alternative)
-//            .padding(.horizontal, 5)
-//            .background(Color.palette.child.cornerRadius(5))
     }
     // product name
     private var productName: some View {

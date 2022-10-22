@@ -48,8 +48,6 @@ extension ProductCardView {
             .font(.caption)
             .bold()
             .foregroundColor(Color.palette.alternative)
-//            .padding(.horizontal, 5)
-//            .background(Color.palette.child.cornerRadius(5))
     }
     // product brand
     private var productBrand: some View {
@@ -57,8 +55,6 @@ extension ProductCardView {
             .font(.caption)
             .bold()
             .foregroundColor(Color.palette.alternative)
-//            .padding(.horizontal, 5)
-//            .background(Color.palette.child.cornerRadius(5))
     }
     // product name
     private var productName: some View {

@@ -18,20 +18,6 @@ class ProductImageService {
         return storage.child("products")
     }
     
-    // MARK: download product image from Firebase Storage
-    func downloadProductImage(product: ProductModel, completion: @escaping (Result<UIImage, Error>) -> Void) {
-        images.child(product.id).child(product.id).getData(maxSize: 3 * 1024 * 1024) { data, error in
-            guard let data = data else {
-                if let error = error {
-                    completion(.failure(error))
-                }
-                return
-            }
-            guard let image = UIImage(data: data) else { return }
-            completion(.success(image))
-        }
-    }
-    
     // MARK: upload product main image to Firebase Storage
     func uploadProductMainImage(product: ProductModel, completion: @escaping (Result<ProductModel, Error>) -> Void) {
         guard let image = product.mainImage,
@@ -50,7 +36,48 @@ class ProductImageService {
         }
     }
     
-    // MARK: upload product images to Firebase Storage
+    // MARK: download product main image from Firebase Storage
+    func downloadProductMainImage(product: ProductModel, completion: @escaping (Result<UIImage, Error>) -> Void) {
+        images.child("main").child(product.id).getData(maxSize: 3 * 1024 * 1024) { data, error in
+            guard let data = data else {
+                if let error = error {
+                    completion(.failure(error))
+                }
+                return
+            }
+            guard let image = UIImage(data: data) else { return }
+            completion(.success(image))
+        }
+    }
+    
+    // MARK: download product image from Firebase Storage
+    func downloadProductImage(imageLink: StorageReference, completion: @escaping (Result<UIImage, Error>) -> Void) {
+        imageLink.getData(maxSize: 3 * 1024 * 1024) { data, error in
+            guard let data = data else {
+                if let error = error {
+                    completion(.failure(error))
+                }
+                return
+            }
+            guard let image = UIImage(data: data) else { return }
+            completion(.success(image))
+        }
+    }
+    
+    // MARK: download product all images links from Firebase Storage
+    func downloadImagesLinks(product: ProductModel, completion: @escaping (Result<[StorageReference], Error>) -> Void) {
+        images.child(product.id).listAll { storageListResult, error in
+            guard let list = storageListResult else {
+                if let error = error {
+                    completion(.failure(error))
+                }
+                return
+            }
+            completion(.success(list.items))
+        }
+    }
+    
+    // MARK: upload all product images to Firebase Storage
     func uploadProductImages(product: ProductModel, completion: @escaping (Result<ProductModel, Error>) -> Void) {
         guard !product.images.isEmpty else { return }
         let metadata = StorageMetadata()
