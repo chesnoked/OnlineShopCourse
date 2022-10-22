@@ -35,14 +35,8 @@ struct ProductCardView: View {
 extension ProductCardView {
     // product image
     @ViewBuilder private var productImage: some View {
-        if let image = product.image {
+        if let image = product.mainImage {
             Image(uiImage: image)
-                .resizable()
-                .clipShape(RoundedRectangle(cornerRadius: 5))
-                .frame(width: Settings.shared.productCardSize, height: Settings.shared.productCardSize)
-        }
-        else {
-            Image(product.imageFromAssets)
                 .resizable()
                 .clipShape(RoundedRectangle(cornerRadius: 5))
                 .frame(width: Settings.shared.productCardSize, height: Settings.shared.productCardSize)

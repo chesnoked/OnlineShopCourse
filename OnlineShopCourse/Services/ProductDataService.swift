@@ -57,11 +57,10 @@ class ProductDataService {
                   let brand: Brands = Brands.init(rawValue: brandRawValue),
                   let name: String = data["name"] as? String,
                   let description: String = data["description"] as? String,
-                  let cost: Double = data["cost"] as? Double,
-                  let imageFromAssets: String = data["imageFromAssets"] as? String
+                  let cost: Double = data["cost"] as? Double
             else { return }
             
-            let product: ProductModel = ProductModel(id: id, article: article, brand: brand, name: name, description: description, cost: cost, imageFromAssets: imageFromAssets)
+            let product: ProductModel = ProductModel(id: id, article: article, brand: brand, name: name, description: description, cost: cost)
             completion(.success(product))
         }
     }
