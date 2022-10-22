@@ -34,7 +34,7 @@ class ShopViewModel: ObservableObject {
     }
     
     // MARK: Get product index in products
-    private func getIndex(product: ProductModel) -> Int {
+    func getIndex(product: ProductModel) -> Int {
         guard let index = products.firstIndex(where: { oneProduct in product.id == oneProduct.id })
         else { return 0 }
         return index
@@ -51,26 +51,29 @@ class ShopViewModel: ObservableObject {
                     case .success(let image):
                         let product = ProductModel(product: product, productMainImage: image)
                         self.products.append(product)
-                        self.productImageService.downloadImagesLinks(product: product) { result in
-                            switch result {
-                            case .success(let links):
-                                links.forEach { link in
-                                    self.productImageService.downloadProductImage(imageLink: link) { result in
-                                        switch result {
-                                        case .success(let image):
-                                            self.products[self.getIndex(product: product)].images.append(image)
-                                        case .failure(_):
-                                            break
-                                        }
-                                    }
-                                }
-                            case .failure(_):
-                                break
-                            }
-                        }
-                        
                     case .failure(_):
                         break
+                    }
+                }
+            case .failure(_):
+                break
+            }
+        }
+    }
+    
+    // MARK: Get product images
+    func getProductImages(product: ProductModel) {
+        productImageService.downloadImagesLinks(product: product) { result in
+            switch result {
+            case .success(let links):
+                links.forEach { link in
+                    self.productImageService.downloadProductImage(imageLink: link) { result in
+                        switch result {
+                        case .success(let image):
+                            self.products[self.getIndex(product: product)].images.append(image)
+                        case .failure(_):
+                            break
+                        }
                     }
                 }
             case .failure(_):

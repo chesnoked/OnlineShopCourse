@@ -76,7 +76,13 @@ extension ShopView {
                         }
                 }
                 .sheet(item: $selectedProduct) { product in
-                    ProductDetailView(product: product)
+                    ProductDetailView(product: $shopVM.products[shopVM.getIndex(product: product)])
+                        .onAppear {
+                            shopVM.getProductImages(product: product)
+                        }
+                        .onDisappear {
+                            shopVM.products[shopVM.getIndex(product: product)].images.removeAll()
+                        }
                 }
             }
         }

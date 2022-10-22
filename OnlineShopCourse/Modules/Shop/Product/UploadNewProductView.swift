@@ -19,15 +19,19 @@ struct UploadNewProductView: View {
     @Binding var showUploadNewProductView: Bool
     @State private var trigger: Bool = false
     @State private var pickerSelectedItems: [PhotosPickerItem] = []
+    @State private var showStatusAnimation: Bool = false
     var body: some View {
         ZStack {
-            VStack(spacing: 10) {
+            VStack(alignment: .leading, spacing: 10) {
                 HStack(spacing: 0) {
                     // upload product
                     uploadProduct
                     Spacer()
+                    // image picker
+                    imagePicker
                     // reset product
                     resetProduct
+                        .padding(.leading, 5)
                 }
                 // brand picker
                 productBrandPicker
@@ -41,8 +45,8 @@ struct UploadNewProductView: View {
                 productDescription
                 // selected images
                 selectedImages
-                // image picker
-                imagePicker
+                // status animation
+                statusAnimation
                 Spacer()
             }
             .frame(width: UIScreen.main.bounds.width * 0.66)
@@ -59,20 +63,24 @@ extension UploadNewProductView {
     // product brand picker
     private var productBrandPicker: some View {
         HStack(spacing: 0) {
-            Text("BRAND:")
-                .bold()
-                .foregroundColor(Color.palette.child)
-                .padding(.leading)
-            Picker("", selection: $shopVM.newProduct.brand) {
-                ForEach(Brands.allCases, id: \.self) { brand in
-                    Text(brand.rawValue)
-                        .tag(brand.rawValue)
+            HStack(spacing: 0) {
+                Text("BRAND:")
+                    .bold()
+                    .foregroundColor(Color.palette.child)
+                    .padding(.leading)
+                Picker("", selection: $shopVM.newProduct.brand) {
+                    ForEach(Brands.allCases, id: \.self) { brand in
+                        Text(brand.rawValue)
+                            .tag(brand.rawValue)
+                    }
                 }
+                .accentColor(Color.palette.child)
             }
-            .accentColor(Color.palette.child)
+            .background(Color.palette.parent.cornerRadius(5))
+            Spacer()
+            Image(systemName: "checkmark")
+                .foregroundColor(Brands.init(rawValue: shopVM.newProduct.brand) == nil ? .clear : Color.palette.parent)
         }
-        .background(Color.palette.parent.cornerRadius(5))
-        .frame(maxWidth: .infinity, alignment: .leading)
     }
     // product article
     private var productArticle: some View {
@@ -144,9 +152,10 @@ extension UploadNewProductView {
                         .aspectRatio(contentMode: .fill)
                         .cornerRadius(5)
                     if shopVM.newProduct.mainImage == image {
-                        Image(systemName: "checkmark")
-                            .foregroundColor(Color.palette.child)
+                        Image(systemName: "checkmark.circle.fill")
+                            .foregroundColor(Color.palette.parent)
                             .bold()
+                            .background(Circle().fill(Color.palette.child))
                     }
                 }
                 .onTapGesture {
@@ -155,16 +164,29 @@ extension UploadNewProductView {
             }
         }
     }
+    // status animation
+    private var statusAnimation: some View {
+        Group {
+            Button(action: {
+                showStatusAnimation.toggle()
+            }, label: {
+                Text("Show status")
+                    .foregroundColor(Color.palette.parent)
+                    .bold()
+            })
+            if showStatusAnimation {
+                StatusAnimation(mode: ImageStatus.ok)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .center)
+    }
     // image picker
     private var imagePicker: some View {
         PhotosPicker(selection: $pickerSelectedItems, maxSelectionCount: 5, matching: .any(of: [.images, .not(.videos)])) {
             Image(systemName: "photo.stack")
-                .font(.system(size: 18))
+                .foregroundColor(Color.palette.parent)
                 .bold()
-                .foregroundColor(Color.palette.child)
         }
-        .padding(10)
-        .background(Circle().fill(Color.palette.parent))
         .onChange(of: pickerSelectedItems) { newItems in
             Task {
                 shopVM.newProduct.mainImage = nil
@@ -199,23 +221,23 @@ extension UploadNewProductView {
 
 extension UploadNewProductView {
     // upload product
-    private var uploadProduct: some View {
-        Button(action: {
-            if let product = shopVM.setProduct() {
-                shopVM.uploadProduct(product: product)
-            }
-        }, label: {
-            Image(systemName: "icloud.and.arrow.up")
-                .foregroundColor(Color.palette.parent)
-                .bold()
-        })
+    @ViewBuilder private var uploadProduct: some View {
+        if shopVM.productValidity {
+            Button(action: {
+                if let product = shopVM.setProduct() {
+                    shopVM.uploadProduct(product: product)
+                }
+            }, label: {
+                CloudAnimation()
+            })
+        }
     }
     // reset product
     private var resetProduct: some View {
         Button(action: {
             shopVM.resetProduct()
         }, label: {
-            Image(systemName: "arrow.triangle.2.circlepath")
+            Image(systemName: "plus.circle")
                 .foregroundColor(Color.palette.parent)
                 .bold()
         })

@@ -19,9 +19,7 @@ struct ProductCardView: View {
         VStack(alignment: .leading, spacing: 5) {
             // product image
             productImage
-                .padding(.bottom, 0)
-            // product article
-//            productArticle
+                .padding(.bottom, 5)
             // product brand
             productBrand
             // product name
@@ -47,26 +45,27 @@ extension ProductCardView {
         Text(product.article)
             .font(.caption)
             .bold()
-            .foregroundColor(Color.palette.alternative)
+            .foregroundColor(Color.palette.child)
     }
     // product brand
     private var productBrand: some View {
         Text(product.brand.rawValue)
             .font(.caption)
             .bold()
-            .foregroundColor(Color.palette.alternative)
+            .foregroundColor(Color.palette.child)
     }
     // product name
     private var productName: some View {
         Text(product.name)
+            .lineLimit(1)
             .font(.headline)
-            .foregroundColor(Color.palette.alternative)
+            .foregroundColor(Color.palette.child)
     }
     // product cost
     private var productCost: some View {
         Text("\(product.cost.twoDecimalPlaces()) ₽")
             .font(.callout)
             .bold()
-            .foregroundColor(Color.palette.alternative)
+            .foregroundColor(Color.palette.child)
     }
 }

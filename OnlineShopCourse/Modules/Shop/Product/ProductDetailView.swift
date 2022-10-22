@@ -16,7 +16,7 @@ import SwiftUI
 struct ProductDetailView: View {
     @Environment(\.presentationMode) private var mode
     @EnvironmentObject private var shopVM: ShopViewModel
-    let product: ProductModel
+    @Binding var product: ProductModel
     var body: some View {
         ZStack {
             VStack(alignment: .leading, spacing: 0) {
@@ -24,24 +24,16 @@ struct ProductDetailView: View {
                 productImages
                 // product data
                 VStack(alignment: .leading, spacing: 5) {
-                    HStack(spacing: 0) {
-                        // product article
-                        productArticle
-                        Spacer()
-                        // delete product
-                        deleteProduct
-                            .padding(.trailing, 10)
-                        // upload product
-                        uploadProduct
-                    }
+                    // product article
+                    productArticle
                     // product brand
                     productBrand
                     // product name
                     productName
-                    // product description
-                    productDescription
                     // product cost
                     productCost
+                    // product description
+                    productDescription
                 }
                 .padding([.horizontal, .vertical])
                 Spacer()
@@ -67,6 +59,10 @@ extension ProductDetailView {
             }
             .tabViewStyle(PageTabViewStyle())
             .frame(height: 300)
+        } else {
+            ProgressView()
+                .tint(Color.palette.child)
+                .frame(maxWidth: .infinity, maxHeight: 300, alignment: .center)
         }
     }
     // product article
@@ -74,33 +70,33 @@ extension ProductDetailView {
         Text("ID: \(product.article)")
             .font(.caption)
             .bold()
-            .foregroundColor(Color.palette.alternative)
+            .foregroundColor(Color.palette.child)
     }
     // product brand
     private var productBrand: some View {
         Text("BRAND: \(product.brand.rawValue)")
             .font(.caption)
             .bold()
-            .foregroundColor(Color.palette.alternative)
+            .foregroundColor(Color.palette.child)
     }
     // product name
     private var productName: some View {
         Text(product.name)
             .font(.headline)
-            .foregroundColor(Color.palette.alternative)
+            .foregroundColor(Color.palette.child)
     }
     // product description
     private var productDescription: some View {
         Text(product.description)
             .font(.subheadline)
-            .foregroundColor(Color.palette.alternative)
+            .foregroundColor(Color.palette.child)
     }
     // product cost
     private var productCost: some View {
         Text("\(product.cost.twoDecimalPlaces()) ₽")
             .font(.callout)
             .bold()
-            .foregroundColor(Color.palette.alternative)
+            .foregroundColor(Color.palette.child)
     }
     // close button
     private var closeButton: some View {
@@ -111,30 +107,10 @@ extension ProductDetailView {
             }, label: {
                 Image(systemName: "chevron.compact.down")
                     .foregroundColor(Color.palette.child)
+                    .bold()
             })
         }
         .padding(.bottom)
-    }
-}
-
-extension ProductDetailView {
-    // upload product
-    private var uploadProduct: some View {
-        Button(action: {
-            shopVM.uploadProduct(product: product)
-        }, label: {
-            Image(systemName: "arrow.up")
-                .foregroundColor(Color.palette.alternative)
-        })
-    }
-    // delete product
-    private var deleteProduct: some View {
-        Button(action: {
-            shopVM.deleteProduct(product: product)
-        }, label: {
-            Image(systemName: "trash")
-                .foregroundColor(Color.palette.alternative)
-        })
     }
 }
 
