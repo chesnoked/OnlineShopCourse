@@ -18,6 +18,25 @@ class ProductImageService {
         return storage.child("products")
     }
     
+    // MARK: upload all product images
+    func uploadAllProductImages(product: ProductModel, completion: @escaping (Result<ProductModel, Error>) -> Void) {
+        uploadProductMainImage(product: product) { result in
+            switch result {
+            case .success(let product):
+                self.uploadProductImages(product: product) { result in
+                    switch result {
+                    case .success(let product):
+                        completion(.success(product))
+                    case .failure(let error):
+                        completion(.failure(error))
+                    }
+                }
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+    
     // MARK: upload product main image to Firebase Storage
     func uploadProductMainImage(product: ProductModel, completion: @escaping (Result<ProductModel, Error>) -> Void) {
         guard let image = product.mainImage,
@@ -77,7 +96,7 @@ class ProductImageService {
         }
     }
     
-    // MARK: upload all product images to Firebase Storage
+    // MARK: upload product images to Firebase Storage
     func uploadProductImages(product: ProductModel, completion: @escaping (Result<ProductModel, Error>) -> Void) {
         guard !product.images.isEmpty else { return }
         let metadata = StorageMetadata()

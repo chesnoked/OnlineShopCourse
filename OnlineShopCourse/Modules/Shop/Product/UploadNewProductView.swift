@@ -47,6 +47,7 @@ struct UploadNewProductView: View {
                 selectedImages
                 // status animation
                 statusAnimation
+                    .padding(.top)
                 Spacer()
             }
             .frame(width: UIScreen.main.bounds.width * 0.66)
@@ -167,15 +168,11 @@ extension UploadNewProductView {
     // status animation
     private var statusAnimation: some View {
         Group {
-            Button(action: {
-                showStatusAnimation.toggle()
-            }, label: {
-                Text("Show status")
-                    .foregroundColor(Color.palette.parent)
-                    .bold()
-            })
-            if showStatusAnimation {
-                StatusAnimation(mode: ImageStatus.ok)
+            if shopVM.progressViewIsLoading {
+                ProgressView()
+                    .tint(Color.palette.parent)
+            } else if shopVM.showStatusAnimation {
+                StatusAnimation(status: shopVM.uploadProductStatus)
             }
         }
         .frame(maxWidth: .infinity, alignment: .center)
@@ -212,6 +209,7 @@ extension UploadNewProductView {
                             trigger = false
                             if dragValue.translation.height < -55 {
                                 showUploadNewProductView.toggle()
+                                shopVM.resetProduct()
                             }
                         })
                 )

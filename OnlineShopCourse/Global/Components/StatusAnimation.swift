@@ -19,10 +19,10 @@ enum ImageStatus: String {
 }
 
 struct StatusAnimation: View {
-    let mode: ImageStatus
+    let status: ImageStatus
     @State private var trigger: Bool = false
     var body: some View {
-        Image(systemName: mode.rawValue)
+        Image(systemName: status.rawValue)
             .foregroundColor(Color.palette.parent)
             .scaleEffect(trigger ? 1.61 : 1.0)
             .animation(Animation.timingCurve(0.34, 1.56, 0.88, 1.2, duration: 1))

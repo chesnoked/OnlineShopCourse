@@ -15,8 +15,31 @@ class ShopViewModel: ObservableObject {
     @Published var newProduct: NewProduct = NewProduct()
     @Published var products: [ProductModel] = []
     
+    @Published var uploadProductStatus: ImageStatus = ImageStatus.none
+    @Published var progressViewIsLoading: Bool = false
+    @Published var showStatusAnimation: Bool = false
+    
     init() {
         getProducts()
+    }
+    
+    // MARK: Loader
+    private func progressViewLoader(deadLine: Double) {
+        progressViewIsLoading = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + deadLine) {
+            if self.progressViewIsLoading { self.statusAnimationLoader() }
+        }
+    }
+    
+    // MARK: Animation loader
+    private func statusAnimationLoader() {
+        progressViewIsLoading = false
+        showStatusAnimation = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
+            self.showStatusAnimation = false
+//            if self.uploadProductStatus != ImageStatus.none { self.resetProduct() }
+            self.uploadProductStatus = ImageStatus.none
+        }
     }
     
     // MARK: get products from Firebase
@@ -45,7 +68,6 @@ class ShopViewModel: ObservableObject {
         productDataService.downloadProductData(productID: productID) { result in
             switch result {
             case .success(let product):
-                // download product main image
                 self.productImageService.downloadProductMainImage(product: product) { result in
                     switch result {
                     case .success(let image):
@@ -84,20 +106,15 @@ class ShopViewModel: ObservableObject {
     
     // MARK: upload product to Firebase
     func uploadProduct(product: ProductModel) {
+        progressViewLoader(deadLine: 60.0)
         productDataService.uploadProductData(product: product) { result in
             switch result {
             case .success(let product):
-                self.productImageService.uploadProductMainImage(product: product) { result in
+                self.productImageService.uploadAllProductImages(product: product) { result in
                     switch result {
-                    case .success(let product):
-                        self.productImageService.uploadProductImages(product: product) { result in
-                            switch result {
-                            case .success(let product):
-                                print("Successfully uploaded image for product: \(product.id)")
-                            case .failure(_):
-                                self.deleteProduct(product: product)
-                            }
-                        }
+                    case .success(_):
+                        self.uploadProductStatus = ImageStatus.ok
+                        self.statusAnimationLoader()
                     case .failure(_):
                         self.deleteProduct(product: product)
                     }
