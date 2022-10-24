@@ -19,7 +19,6 @@ struct UploadNewProductView: View {
     @Binding var showUploadNewProductView: Bool
     @State private var trigger: Bool = false
     @State private var pickerSelectedItems: [PhotosPickerItem] = []
-    @State private var showStatusAnimation: Bool = false
     var body: some View {
         ZStack {
             VStack(alignment: .leading, spacing: 10) {
@@ -27,11 +26,8 @@ struct UploadNewProductView: View {
                     // upload product
                     uploadProduct
                     Spacer()
-                    // image picker
-                    imagePicker
-                    // reset product
-                    resetProduct
-                        .padding(.leading, 5)
+                    // refresh shop
+                    refreshShop
                 }
                 // brand picker
                 productBrandPicker
@@ -142,9 +138,30 @@ extension UploadNewProductView {
                 .foregroundColor(shopVM.newProduct.description.isEmpty ? .clear : Color.palette.parent)
         }
     }
+    // image picker
+    private var imagePicker: some View {
+        PhotosPicker(selection: $pickerSelectedItems, maxSelectionCount: 5, matching: .any(of: [.images, .not(.videos)])) {
+            Image(systemName: "photo.stack")
+                .foregroundColor(Color.palette.parent)
+                .bold()
+        }
+        .onChange(of: pickerSelectedItems) { newItems in
+            Task {
+                shopVM.newProduct.mainImage = nil
+                shopVM.newProduct.images.removeAll()
+                for item in newItems {
+                    if let imageData = try? await item.loadTransferable(type: Data.self), let image = UIImage(data: imageData) {
+                        shopVM.newProduct.images.append(image)
+                    }
+                }
+            }
+        }
+    }
     // selected images
     private var selectedImages: some View {
         HStack(spacing: 5) {
+            // image picker
+            imagePicker
             ForEach(shopVM.newProduct.images, id: \.self) { image in
                 ZStack {
                     Image(uiImage: image)
@@ -177,25 +194,6 @@ extension UploadNewProductView {
         }
         .frame(maxWidth: .infinity, alignment: .center)
     }
-    // image picker
-    private var imagePicker: some View {
-        PhotosPicker(selection: $pickerSelectedItems, maxSelectionCount: 5, matching: .any(of: [.images, .not(.videos)])) {
-            Image(systemName: "photo.stack")
-                .foregroundColor(Color.palette.parent)
-                .bold()
-        }
-        .onChange(of: pickerSelectedItems) { newItems in
-            Task {
-                shopVM.newProduct.mainImage = nil
-                shopVM.newProduct.images.removeAll()
-                for item in newItems {
-                    if let imageData = try? await item.loadTransferable(type: Data.self), let image = UIImage(data: imageData) {
-                        shopVM.newProduct.images.append(image)
-                    }
-                }
-            }
-        }
-    }
     // drag button
     private var dragButton: some View {
         VStack(spacing: 0) {
@@ -208,8 +206,8 @@ extension UploadNewProductView {
                         .onEnded({ dragValue in
                             trigger = false
                             if dragValue.translation.height < -55 {
-                                showUploadNewProductView.toggle()
                                 shopVM.resetProduct()
+                                showUploadNewProductView.toggle()
                             }
                         })
                 )
@@ -230,12 +228,12 @@ extension UploadNewProductView {
             })
         }
     }
-    // reset product
-    private var resetProduct: some View {
+    // refresh shop
+    private var refreshShop: some View {
         Button(action: {
-            shopVM.resetProduct()
+            shopVM.refreshShop()
         }, label: {
-            Image(systemName: "plus.circle")
+            Image(systemName: "arrow.triangle.2.circlepath")
                 .foregroundColor(Color.palette.parent)
                 .bold()
         })

@@ -26,7 +26,7 @@ struct OnlineShopView: View {
     var body: some View {
         ZStack {
             VStack(spacing: 0) {
-                // show pages
+                // pages
                 pages
                 Spacer(minLength: 10)
                 // tab bar

@@ -40,13 +40,6 @@ extension ProductCardView {
                 .frame(width: Settings.shared.productCardSize, height: Settings.shared.productCardSize)
         }
     }
-    // product article
-    private var productArticle: some View {
-        Text(product.article)
-            .font(.caption)
-            .bold()
-            .foregroundColor(Color.palette.child)
-    }
     // product brand
     private var productBrand: some View {
         Text(product.brand.rawValue)

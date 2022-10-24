@@ -115,7 +115,7 @@ class ProductImageService {
         }
     }
     
-    // MARK: delete product images on Firebase Storage
+    // MARK: delete all product images on Firebase Storage
     func deleteProductImages(product: ProductModel) {
         images.child("main").child(product.id).delete { error in
             if let _ = error {

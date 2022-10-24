@@ -23,25 +23,6 @@ class ShopViewModel: ObservableObject {
         getProducts()
     }
     
-    // MARK: Loader
-    private func progressViewLoader(deadLine: Double) {
-        progressViewIsLoading = true
-        DispatchQueue.main.asyncAfter(deadline: .now() + deadLine) {
-            if self.progressViewIsLoading { self.statusAnimationLoader() }
-        }
-    }
-    
-    // MARK: Animation loader
-    private func statusAnimationLoader() {
-        progressViewIsLoading = false
-        showStatusAnimation = true
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
-            self.showStatusAnimation = false
-//            if self.uploadProductStatus != ImageStatus.none { self.resetProduct() }
-            self.uploadProductStatus = ImageStatus.none
-        }
-    }
-    
     // MARK: get products from Firebase
     func getProducts() {
         productDataService.downloadProductsID { result in
@@ -54,13 +35,6 @@ class ShopViewModel: ObservableObject {
                 break
             }
         }
-    }
-    
-    // MARK: Get product index in products
-    func getIndex(product: ProductModel) -> Int {
-        guard let index = products.firstIndex(where: { oneProduct in product.id == oneProduct.id })
-        else { return 0 }
-        return index
     }
     
     // MARK: get product from Firebase
@@ -83,7 +57,14 @@ class ShopViewModel: ObservableObject {
         }
     }
     
-    // MARK: Get product images
+    // MARK: get product index in products
+    func getIndex(product: ProductModel) -> Int {
+        guard let index = products.firstIndex(where: { oneProduct in product.id == oneProduct.id })
+        else { return 0 }
+        return index
+    }
+    
+    // MARK: get product images
     func getProductImages(product: ProductModel) {
         productImageService.downloadImagesLinks(product: product) { result in
             switch result {
@@ -101,6 +82,24 @@ class ShopViewModel: ObservableObject {
             case .failure(_):
                 break
             }
+        }
+    }
+    
+    // MARK: progress view loader
+    private func progressViewLoader(deadLine: Double) {
+        progressViewIsLoading = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + deadLine) {
+            if self.progressViewIsLoading { self.statusAnimationLoader() }
+        }
+    }
+    
+    // MARK: status animation loader
+    private func statusAnimationLoader() {
+        progressViewIsLoading = false
+        showStatusAnimation = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
+            self.showStatusAnimation = false
+            self.uploadProductStatus = ImageStatus.none
         }
     }
     
@@ -137,18 +136,14 @@ class ShopViewModel: ObservableObject {
         }
     }
     
-    // MARK: Reset product
-    func resetProduct() {
-        newProduct.brand = ""
-        newProduct.article = ""
-        newProduct.name = ""
-        newProduct.cost = ""
-        newProduct.description = ""
-        newProduct.mainImage = nil
-        newProduct.images.removeAll()
+    // MARK: refresh shop
+    func refreshShop() {
+        resetProduct()
+        products.removeAll()
+        getProducts()
     }
     
-    // MARK: Check on product is valid
+    // MARK: check on product is valid
     var productValidity: Bool {
         guard let _ = Brands.init(rawValue: newProduct.brand),
               !newProduct.article.isEmpty,
@@ -160,7 +155,7 @@ class ShopViewModel: ObservableObject {
         return true
     }
     
-    // MARK: Set product
+    // MARK: set product
     func setProduct() -> ProductModel? {
         guard productValidity else { return nil }
         return ProductModel(
@@ -171,6 +166,17 @@ class ShopViewModel: ObservableObject {
             cost: Double(newProduct.cost)!,
             images: newProduct.images,
             mainImage: newProduct.mainImage)
+    }
+    
+    // MARK: reset product
+    func resetProduct() {
+        newProduct.brand = ""
+        newProduct.article = ""
+        newProduct.name = ""
+        newProduct.cost = ""
+        newProduct.description = ""
+        newProduct.mainImage = nil
+        newProduct.images.removeAll()
     }
     
 }

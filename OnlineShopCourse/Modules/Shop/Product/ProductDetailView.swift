@@ -85,12 +85,6 @@ extension ProductDetailView {
             .font(.headline)
             .foregroundColor(Color.palette.child)
     }
-    // product description
-    private var productDescription: some View {
-        Text(product.description)
-            .font(.subheadline)
-            .foregroundColor(Color.palette.child)
-    }
     // product cost
     private var productCost: some View {
         Text("\(product.cost.twoDecimalPlaces()) ₽")
@@ -98,6 +92,16 @@ extension ProductDetailView {
             .bold()
             .foregroundColor(Color.palette.child)
     }
+    // product description
+    private var productDescription: some View {
+        Text(product.description)
+            .font(.subheadline)
+            .foregroundColor(Color.palette.child)
+    }
+    
+}
+
+extension ProductDetailView {
     // close button
     private var closeButton: some View {
         VStack(spacing: 0) {
