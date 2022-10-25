@@ -11,7 +11,7 @@ struct PositionModel: Identifiable {
     
     let id: String
     let product: ProductModel
-    let amount: UInt8
+    var amount: UInt8
     var cost: Double {
         return product.cost * Double(amount)
     }

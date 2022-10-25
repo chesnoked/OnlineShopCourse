@@ -18,14 +18,15 @@ struct ProductDetailView: View {
     @EnvironmentObject private var shopVM: ShopViewModel
     @EnvironmentObject private var cartVM: CartViewModel
     @Binding var product: ProductModel
-    @State private var amount: UInt8 = 1
+    @State var amount: UInt8 = 1
+    @State var position: PositionModel? = nil
     var body: some View {
         ZStack {
             VStack(alignment: .leading, spacing: 0) {
                 // product images
                 productImages
                 // product data
-                VStack(alignment: .leading, spacing: 10) {
+                VStack(alignment: .leading, spacing: 15) {
                     // product article
                     productArticle
                     // product brand
@@ -34,15 +35,8 @@ struct ProductDetailView: View {
                     productName
                     // product cost
                     productCost
-                    
-                    // cart block
-                    HStack(spacing: 15) {
-                        // add to cart
-                        addToCart
-                        // product amount
-                        productAmount
-                    }
-                    
+                    // cart module
+                    cartModule
                     // product description
                     productDescription
                 }
@@ -60,20 +54,27 @@ struct ProductDetailView: View {
 extension ProductDetailView {
     // product images
     @ViewBuilder private var productImages: some View {
-        if let _ = product.images.first {
-            TabView {
-                ForEach(product.images, id: \.self) { image in
-                    Image(uiImage: image)
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
+        Group {
+            if let _ = product.images.first {
+                TabView {
+                    ForEach(product.images, id: \.self) { image in
+                        Image(uiImage: image)
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                    }
                 }
+                .tabViewStyle(PageTabViewStyle())
+            } else {
+                ProgressView()
+                    .tint(Color.palette.child)
             }
-            .tabViewStyle(PageTabViewStyle())
-            .frame(height: 300)
-        } else {
-            ProgressView()
-                .tint(Color.palette.child)
-                .frame(maxWidth: .infinity, maxHeight: 300, alignment: .center)
+        }
+        .frame(maxWidth: .infinity, maxHeight: 300, alignment: .center)
+        .onAppear {
+            shopVM.getProductImages(product: product)
+        }
+        .onDisappear {
+            shopVM.products[shopVM.getProductIndex(product: product)].images.removeAll()
         }
     }
     // product article
@@ -103,6 +104,15 @@ extension ProductDetailView {
             .bold()
             .foregroundColor(Color.palette.child)
     }
+    // cart module
+    private var cartModule: some View {
+        HStack(spacing: 15) {
+            // add to cart
+            addToCart
+            // product amount
+            productAmount
+        }
+    }
     // product description
     private var productDescription: some View {
         Text(product.description)
@@ -131,6 +141,14 @@ extension ProductDetailView {
             Text("\(amount)")
                 .foregroundColor(Color.palette.child)
         }
+        .onChange(of: amount) { newValue in
+            changeProductAmount(to: newValue)
+        }
+    }
+    // change product amount
+    private func changeProductAmount(to newValue: UInt8) {
+        guard let position = position else { return }
+        cartVM.order[cartVM.getPositionIndex(position: position)].amount = newValue
     }
 }
 

@@ -14,7 +14,7 @@
 import SwiftUI
 
 struct PositionView: View {
-    let position: PositionModel
+    @Binding var position: PositionModel
     var body: some View {
         HStack(alignment: .center, spacing: 0) {
             // position image
@@ -61,7 +61,7 @@ extension PositionView {
                         .stroke (
                             Color.palette.parent
                             ,
-                            lineWidth: 0.44
+                            lineWidth: 0.55
                         )
                 }
         }

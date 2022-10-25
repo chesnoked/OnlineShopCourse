@@ -58,7 +58,7 @@ class ShopViewModel: ObservableObject {
     }
     
     // MARK: get product index in products
-    func getIndex(product: ProductModel) -> Int {
+    func getProductIndex(product: ProductModel) -> Int {
         guard let index = products.firstIndex(where: { oneProduct in product.id == oneProduct.id })
         else { return 0 }
         return index
@@ -73,7 +73,7 @@ class ShopViewModel: ObservableObject {
                     self.productImageService.downloadProductImage(imageLink: link) { result in
                         switch result {
                         case .success(let image):
-                            self.products[self.getIndex(product: product)].images.append(image)
+                            self.products[self.getProductIndex(product: product)].images.append(image)
                         case .failure(_):
                             break
                         }

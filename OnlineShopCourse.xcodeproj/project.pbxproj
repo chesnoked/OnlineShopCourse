@@ -227,10 +227,10 @@
 		969DE7A0290811E100BB704E /* Cart */ = {
 			isa = PBXGroup;
 			children = (
-				969DE7A52908162600BB704E /* Position */,
 				969DE7A1290811F400BB704E /* CartModel.swift */,
 				969DE7A32908120300BB704E /* CartViewModel.swift */,
 				9653593128F9D49600DE06B4 /* CartView.swift */,
+				969DE7A52908162600BB704E /* Position */,
 			);
 			path = Cart;
 			sourceTree = "<group>";
