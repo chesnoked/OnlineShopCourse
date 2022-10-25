@@ -53,6 +53,8 @@ class ProductDataService {
             
             guard let id: String = data["id"] as? String,
                   let article: String = data["article"] as? String,
+                  let categoryRawValue: String = data["category"] as? String,
+                  let category: Categories = Categories.init(rawValue: categoryRawValue),
                   let brandRawValue: String = data["brand"] as? String,
                   let brand: Brands = Brands.init(rawValue: brandRawValue),
                   let name: String = data["name"] as? String,
@@ -60,7 +62,7 @@ class ProductDataService {
                   let cost: Double = data["cost"] as? Double
             else { return }
             
-            let product: ProductModel = ProductModel(id: id, article: article, brand: brand, name: name, description: description, cost: cost)
+            let product: ProductModel = ProductModel(id: id, article: article, category: category, brand: brand, name: name, description: description, cost: cost)
             completion(.success(product))
         }
     }

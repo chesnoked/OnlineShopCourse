@@ -29,6 +29,8 @@ struct UploadNewProductView: View {
                     // refresh shop
                     refreshShop
                 }
+                // product categories picker
+                productCategoriesPicker
                 // brand picker
                 productBrandPicker
                 // product article
@@ -57,6 +59,28 @@ struct UploadNewProductView: View {
 }
 
 extension UploadNewProductView {
+    // product categories picker
+    private var productCategoriesPicker: some View {
+        HStack(spacing: 0) {
+            HStack(spacing: 0) {
+                Text("CATEGORY:")
+                    .bold()
+                    .foregroundColor(Color.palette.child)
+                    .padding(.leading)
+                Picker("", selection: $shopVM.newProduct.category) {
+                    ForEach(Categories.allCases, id: \.self) { category in
+                        Text(category.rawValue)
+                            .tag(category.rawValue)
+                    }
+                }
+                .accentColor(Color.palette.child)
+            }
+            .background(Color.palette.parent.cornerRadius(5))
+            Spacer()
+            Image(systemName: "checkmark")
+                .foregroundColor(Categories.init(rawValue: shopVM.newProduct.category) == nil ? .clear : Color.palette.parent)
+        }
+    }
     // product brand picker
     private var productBrandPicker: some View {
         HStack(spacing: 0) {

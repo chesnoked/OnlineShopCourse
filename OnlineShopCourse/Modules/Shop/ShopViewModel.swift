@@ -145,7 +145,8 @@ class ShopViewModel: ObservableObject {
     
     // MARK: check on product is valid
     var productValidity: Bool {
-        guard let _ = Brands.init(rawValue: newProduct.brand),
+        guard let _ = Categories.init(rawValue: newProduct.category),
+              let _ = Brands.init(rawValue: newProduct.brand),
               !newProduct.article.isEmpty,
               !newProduct.name.isEmpty,
               let _ = Double(newProduct.cost),
@@ -160,6 +161,7 @@ class ShopViewModel: ObservableObject {
         guard productValidity else { return nil }
         return ProductModel(
             article: newProduct.article,
+            category: Categories.init(rawValue: newProduct.category)!,
             brand: Brands.init(rawValue: newProduct.brand)!,
             name: newProduct.name,
             description: newProduct.description,
@@ -170,6 +172,7 @@ class ShopViewModel: ObservableObject {
     
     // MARK: reset product
     func resetProduct() {
+        newProduct.category = ""
         newProduct.brand = ""
         newProduct.article = ""
         newProduct.name = ""

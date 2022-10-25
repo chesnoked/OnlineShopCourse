@@ -16,14 +16,16 @@ import SwiftUI
 struct ProductDetailView: View {
     @Environment(\.presentationMode) private var mode
     @EnvironmentObject private var shopVM: ShopViewModel
+    @EnvironmentObject private var cartVM: CartViewModel
     @Binding var product: ProductModel
+    @State private var amount: UInt8 = 1
     var body: some View {
         ZStack {
             VStack(alignment: .leading, spacing: 0) {
                 // product images
                 productImages
                 // product data
-                VStack(alignment: .leading, spacing: 5) {
+                VStack(alignment: .leading, spacing: 10) {
                     // product article
                     productArticle
                     // product brand
@@ -32,6 +34,15 @@ struct ProductDetailView: View {
                     productName
                     // product cost
                     productCost
+                    
+                    // cart block
+                    HStack(spacing: 15) {
+                        // add to cart
+                        addToCart
+                        // product amount
+                        productAmount
+                    }
+                    
                     // product description
                     productDescription
                 }
@@ -99,6 +110,28 @@ extension ProductDetailView {
             .foregroundColor(Color.palette.child)
     }
     
+}
+
+extension ProductDetailView {
+    // add to cart
+    private var addToCart: some View {
+        Button(action: {
+            cartVM.addToCart(product: product, amount: amount)
+        }, label: {
+            Image(systemName: "cart.fill.badge.plus")
+                .foregroundColor(Color.palette.child)
+        })
+    }
+    // product amount
+    private var productAmount: some View {
+        HStack(spacing: 10) {
+            Stepper("", value: $amount, in: 1...10)
+                .labelsHidden()
+                .preferredColorScheme(.dark)
+            Text("\(amount)")
+                .foregroundColor(Color.palette.child)
+        }
+    }
 }
 
 extension ProductDetailView {
