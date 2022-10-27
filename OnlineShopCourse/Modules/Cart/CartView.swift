@@ -19,22 +19,76 @@ struct CartView: View {
     @State private var selectedPosition: PositionModel? = nil
     var body: some View {
         ZStack {
-            ScrollView(.vertical, showsIndicators: true) {
-                VStack(spacing: 10) {
-                    ForEach(cartVM.order) { position in
-                        PositionView(position: $cartVM.order[cartVM.getPositionIndex(position: position)])
-                            .onTapGesture {
-                                selectedPosition = position
-                            }
-                    }
-                    .sheet(item: $selectedPosition) { position in
-                        ProductDetailView(product: $shopVM.products[shopVM.getProductIndex(product: position.product)], amount: position.amount, position: position)
-                    }
-                }
+            VStack(spacing: 0) {
+                // nav bar
+                navBar
+                // positions
+                positions
             }
-            .padding(.vertical)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.palette.parent.ignoresSafeArea())
+    }
+}
+
+extension CartView {
+    // nav bar
+    private var navBar: some View {
+        HStack(spacing: 0) {
+            uploadOrder
+            Spacer()
+            total
+            Spacer()
+            resetOrder
+        }
+        .padding([.horizontal, .vertical])
+        .background(Color.palette.child.ignoresSafeArea())
+    }
+    // upload order
+    private var uploadOrder: some View {
+        Button(action: {
+            //
+        }, label: {
+            if cartVM.orderValidity {
+                CloudAnimation()
+            } else {
+                Image(systemName: "icloud.and.arrow.up")
+                    .foregroundColor(Color.palette.parent)
+                    .bold()
+            }
+        })
+    }
+    // total
+    private var total: some View {
+        Text("\(cartVM.total.twoDecimalPlaces()) ₽")
+            .font(.headline)
+            .foregroundColor(Color.palette.parent)
+    }
+    // reset order
+    private var resetOrder: some View {
+        Button(action: {
+            cartVM.resetOrder()
+        }, label: {
+            Image(systemName: "arrow.triangle.2.circlepath")
+                .foregroundColor(Color.palette.parent)
+                .bold()
+        })
+    }
+    // positions
+    private var positions: some View {
+        ScrollView(.vertical, showsIndicators: true) {
+            VStack(spacing: 10) {
+                ForEach(cartVM.order) { position in
+                    PositionView(position: $cartVM.order[cartVM.getPositionIndex(position: position)])
+                        .onTapGesture {
+                            selectedPosition = position
+                        }
+                }
+                .sheet(item: $selectedPosition) { position in
+                    ProductDetailView(product: $shopVM.products[shopVM.getProductIndex(product: position.product)], amount: position.amount, position: position)
+                }
+            }
+        }
+        .padding(.vertical)
     }
 }

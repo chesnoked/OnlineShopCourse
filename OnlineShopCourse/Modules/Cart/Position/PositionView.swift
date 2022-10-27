@@ -14,12 +14,12 @@
 import SwiftUI
 
 struct PositionView: View {
+    @EnvironmentObject private var cartVM: CartViewModel
     @Binding var position: PositionModel
     var body: some View {
         HStack(alignment: .center, spacing: 0) {
             // position image
             positionImage
-                .padding(.leading)
             // product data
             VStack(alignment: .leading, spacing: 5) {
                 // product category
@@ -31,7 +31,7 @@ struct PositionView: View {
                 // product cost
                 productCost
             }
-            .padding()
+            .padding(.horizontal)
             Spacer()
             // position data
             VStack(alignment: .trailing, spacing: 5) {
@@ -39,9 +39,12 @@ struct PositionView: View {
                 productAmount
                 // position cost
                 positionCost
+                Spacer()
+                // amount changer
+                amountChanger
             }
-            .padding(.trailing)
         }
+        .padding()
         .frame(width: UIScreen.main.bounds.width * 0.88, alignment: .leading)
         .background(Color.palette.child.cornerRadius(5))
     }
@@ -105,6 +108,60 @@ extension PositionView {
         Text("\(position.cost.twoDecimalPlaces()) ₽")
             .font(.callout)
             .foregroundColor(Color.palette.parent)
+    }
+}
+
+extension PositionView {
+    // amount changer
+    private var amountChanger: some View {
+        HStack(spacing: 0) {
+            // minus amount product
+            minusAmount
+            // plus amount product
+            plusAmount
+        }
+        .frame(width: 60, height: 30)
+        .background(Color.palette.parent.cornerRadius(5))
+    }
+    // minus product amount
+    private var minusAmount: some View {
+        Button(action: {
+            changeProductAmount(changeMode: .minus)
+        }, label: {
+            Image(systemName: ChangeMode.minus.rawValue)
+                .font(.caption)
+                .bold()
+                .foregroundColor(Color.palette.child)
+        })
+        .frame(maxWidth: .infinity)
+    }
+    // plus product amount
+    private var plusAmount: some View {
+        Button(action: {
+            changeProductAmount(changeMode: .plus)
+        }, label: {
+            Image(systemName: ChangeMode.plus.rawValue)
+                .font(.caption)
+                .bold()
+                .foregroundColor(Color.palette.child)
+        })
+        .frame(maxWidth: .infinity)
+    }
+    // change mode
+    enum ChangeMode: String {
+        case minus = "minus"
+        case plus = "plus"
+    }
+    // change product amount
+    private func changeProductAmount(changeMode: ChangeMode) {
+        switch changeMode {
+        case .minus:
+            guard position.amount > 1 && position.amount <= 10 else { return }
+            cartVM.order[cartVM.getPositionIndex(position: position)].amount -= 1
+        case .plus:
+            guard position.amount >= 1 && position.amount < 10 else { return }
+            cartVM.order[cartVM.getPositionIndex(position: position)].amount += 1
+        }
     }
 }
 
