@@ -13,6 +13,56 @@
 
 import SwiftUI
 
+struct PositionSwipeView: View {
+    @EnvironmentObject private var cartVM: CartViewModel
+    @Binding var position: PositionModel
+    @State private var offsetX: CGFloat = 0
+    @State private var showMenu: Bool = false
+    var body: some View {
+        ZStack(alignment: .trailing) {
+            // position view
+            PositionView(position: $position)
+                .offset(x: offsetX)
+                .gesture(DragGesture()
+                    .onEnded({ dragValue in
+                        if dragValue.translation.width < -Settings.shared.positionWidth / 6 {
+                            offsetX = -(UIScreen.main.bounds.width - Settings.shared.positionWidth) / 2
+                            showMenu = true
+                        } else if showMenu && dragValue.translation.width > 0 {
+                            showMenu = false
+                            offsetX = 0
+                        }
+                    })
+                )
+            // swipe menu
+            if showMenu {
+                swipeMenu
+            }
+        }
+    }
+    // swipe menu
+    private var swipeMenu: some View {
+        Button(action: {
+            deletePosition()
+        }, label: {
+            Image(systemName: "xmark.app.fill")
+                .font(.caption)
+                .bold()
+                .foregroundColor(Color.palette.child)
+        })
+        .frame(width: (UIScreen.main.bounds.width - Settings.shared.positionWidth) / 2)
+        .frame(maxHeight: .infinity)
+        .contentShape(Rectangle())
+        .onTapGesture {
+            deletePosition()
+        }
+    }
+    // delete position
+    private func deletePosition() {
+        cartVM.order.removeAll(where: { onePosition in position.id == onePosition.id })
+    }
+}
+
 struct PositionView: View {
     @EnvironmentObject private var cartVM: CartViewModel
     @Binding var position: PositionModel
@@ -45,7 +95,7 @@ struct PositionView: View {
             }
         }
         .padding()
-        .frame(width: UIScreen.main.bounds.width * 0.88, alignment: .leading)
+        .frame(width: Settings.shared.positionWidth, alignment: .leading)
         .background(Color.palette.child.cornerRadius(5))
     }
 }
@@ -133,7 +183,11 @@ extension PositionView {
                 .bold()
                 .foregroundColor(Color.palette.child)
         })
-        .frame(maxWidth: .infinity)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .contentShape(Rectangle())
+        .onTapGesture {
+            changeProductAmount(changeMode: .minus)
+        }
     }
     // plus product amount
     private var plusAmount: some View {
@@ -145,7 +199,11 @@ extension PositionView {
                 .bold()
                 .foregroundColor(Color.palette.child)
         })
-        .frame(maxWidth: .infinity)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .contentShape(Rectangle())
+        .onTapGesture {
+            changeProductAmount(changeMode: .plus)
+        }
     }
     // change mode
     enum ChangeMode: String {

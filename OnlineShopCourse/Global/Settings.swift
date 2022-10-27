@@ -13,4 +13,5 @@ class Settings {
     static let shared: Settings = Settings()
     
     let productCardSize: CGFloat = UIScreen.main.bounds.width / 2.4
+    let positionWidth: CGFloat = UIScreen.main.bounds.width * 0.88
 }

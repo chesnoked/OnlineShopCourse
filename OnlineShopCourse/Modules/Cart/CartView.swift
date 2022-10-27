@@ -24,6 +24,7 @@ struct CartView: View {
                 navBar
                 // positions
                 positions
+                    .animation(.linear)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -79,7 +80,7 @@ extension CartView {
         ScrollView(.vertical, showsIndicators: true) {
             VStack(spacing: 10) {
                 ForEach(cartVM.order) { position in
-                    PositionView(position: $cartVM.order[cartVM.getPositionIndex(position: position)])
+                    PositionSwipeView(position: $cartVM.order[cartVM.getPositionIndex(position: position)])
                         .onTapGesture {
                             selectedPosition = position
                         }
