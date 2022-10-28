@@ -9,6 +9,7 @@ import Foundation
 
 class CartViewModel: ObservableObject {
     
+    @Published var newOrder: NewOrder = NewOrder()
     @Published var order: [PositionModel] = []
     
     // MARK: order total cost

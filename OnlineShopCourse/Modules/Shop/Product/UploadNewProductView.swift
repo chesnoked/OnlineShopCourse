@@ -107,7 +107,7 @@ extension UploadNewProductView {
     private var productArticle: some View {
         HStack(spacing: 0) {
             TextField("article", text: $shopVM.newProduct.article)
-                .newProductTextFieldStyle()
+                .uploadDataTextFieldStyle()
             Spacer()
             Image(systemName: "checkmark")
                 .foregroundColor(shopVM.newProduct.article.isEmpty ? .clear : Color.palette.parent)
@@ -117,7 +117,7 @@ extension UploadNewProductView {
     private var productName: some View {
         HStack(spacing: 0) {
             TextField("name", text: $shopVM.newProduct.name)
-                .newProductTextFieldStyle()
+                .uploadDataTextFieldStyle()
             Spacer()
             Image(systemName: "checkmark")
                 .foregroundColor(shopVM.newProduct.name.isEmpty ? .clear : Color.palette.parent)
@@ -127,7 +127,7 @@ extension UploadNewProductView {
     private var productCost: some View {
         HStack(spacing: 0) {
             TextField("cost", text: $shopVM.newProduct.cost)
-                .newProductTextFieldStyle()
+                .uploadDataTextFieldStyle()
             Spacer()
             Image(systemName: "checkmark")
                 .foregroundColor(Double(shopVM.newProduct.cost) == nil ? .clear : Color.palette.parent)

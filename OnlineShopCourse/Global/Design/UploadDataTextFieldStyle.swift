@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct NewProductTextFieldStyle: ViewModifier {
+struct UploadDataTextFieldStyle: ViewModifier {
     func body(content: Content) -> some View {
         content
             .font(.system(size: 16, weight: .medium, design: .rounded))
@@ -26,7 +26,7 @@ struct NewProductTextFieldStyle: ViewModifier {
 }
 
 extension View {
-    func newProductTextFieldStyle() -> some View {
-        return modifier(NewProductTextFieldStyle())
+    func uploadDataTextFieldStyle() -> some View {
+        return modifier(UploadDataTextFieldStyle())
     }
 }

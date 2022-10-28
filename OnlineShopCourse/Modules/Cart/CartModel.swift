@@ -22,3 +22,17 @@ struct PositionModel: Identifiable {
         self.amount = amount
     }
 }
+
+struct OrderModel: Identifiable {
+    let id: String
+    let number: String
+    let date: Date
+    let user: UserModel
+    let positions: [PositionModel]
+    let notes: String
+}
+
+struct NewOrder {
+    var user: NewUser = NewUser()
+    var notes: String = ""
+}

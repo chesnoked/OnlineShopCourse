@@ -17,8 +17,11 @@ struct CartView: View {
     @EnvironmentObject private var shopVM: ShopViewModel
     @EnvironmentObject private var cartVM: CartViewModel
     @State private var selectedPosition: PositionModel? = nil
+    @State private var showOrderDetailsView: Bool = false
     var body: some View {
         ZStack {
+            // order details
+            orderDetails
             VStack(spacing: 0) {
                 // nav bar
                 navBar
@@ -33,6 +36,15 @@ struct CartView: View {
 }
 
 extension CartView {
+    // order details
+    @ViewBuilder private var orderDetails: some View {
+        if showOrderDetailsView {
+            OrderDetailsView(showOrderDetailsView: $showOrderDetailsView)
+                .transition(.move(edge: .top))
+                .animation(.linear(duration: 0.88))
+                .zIndex(1)
+        }
+    }
     // nav bar
     private var navBar: some View {
         HStack(spacing: 0) {
@@ -48,7 +60,7 @@ extension CartView {
     // upload order
     private var uploadOrder: some View {
         Button(action: {
-            //
+            showOrderDetailsView.toggle()
         }, label: {
             if cartVM.orderValidity {
                 CloudAnimation()
