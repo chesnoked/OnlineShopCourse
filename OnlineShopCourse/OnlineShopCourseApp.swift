@@ -13,12 +13,14 @@ struct OnlineShopCourseApp: App {
     
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     
+    @StateObject private var authVM: AuthViewModel = AuthViewModel()
     @StateObject private var shopVM: ShopViewModel = ShopViewModel()
     @StateObject private var cartVM: CartViewModel = CartViewModel()
     
     var body: some Scene {
         WindowGroup {
             OnlineShopView()
+                .environmentObject(authVM)
                 .environmentObject(shopVM)
                 .environmentObject(cartVM)
                 .statusBarHidden(true)

@@ -1,11 +1,17 @@
 //
-//  ProfileModel.swift
+//  AuthModel.swift
 //  OnlineShopCourse
 //
-//  Created by Evgeniy Safin on 28.10.2022.
+//  Created by Evgeniy Safin on 29.10.2022.
 //
 
 import Foundation
+
+enum AuthMethod: String {
+    case signin = "Sign In"
+    case signup = "Sign Up"
+    case signout = "Sign Out"
+}
 
 struct UserModel: Identifiable {
     

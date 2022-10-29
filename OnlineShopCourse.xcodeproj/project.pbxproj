@@ -32,8 +32,11 @@
 		969DE7A72908163B00BB704E /* PositionSwipeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 969DE7A62908163B00BB704E /* PositionSwipeView.swift */; };
 		96C1FF002904EF7900997A64 /* CloudAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96C1FEFF2904EF7900997A64 /* CloudAnimation.swift */; };
 		96C1FF022904F5C100997A64 /* StatusAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96C1FF012904F5C100997A64 /* StatusAnimation.swift */; };
+		96DA86D6290CE36A00913393 /* AuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96DA86D5290CE36A00913393 /* AuthView.swift */; };
+		96DA86D8290CE45C00913393 /* AuthModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96DA86D7290CE45C00913393 /* AuthModel.swift */; };
+		96DA86DA290CE4B500913393 /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96DA86D9290CE4B500913393 /* AuthViewModel.swift */; };
+		96DA86DC290CEA6600913393 /* GlassomorphismTextFieldStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96DA86DB290CEA6600913393 /* GlassomorphismTextFieldStyle.swift */; };
 		96E1DCCA290B78B6003EF11A /* OrderDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96E1DCC9290B78B6003EF11A /* OrderDetailsView.swift */; };
-		96E1DCCC290B7B09003EF11A /* ProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96E1DCCB290B7B09003EF11A /* ProfileModel.swift */; };
 		96F4226228FC40B10096E6F3 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 96F4226128FC40B10096E6F3 /* GoogleService-Info.plist */; };
 		96F4226428FC40C10096E6F3 /* ProductDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96F4226328FC40C10096E6F3 /* ProductDataService.swift */; };
 /* End PBXBuildFile section */
@@ -67,8 +70,11 @@
 		969DE7A62908163B00BB704E /* PositionSwipeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PositionSwipeView.swift; sourceTree = "<group>"; };
 		96C1FEFF2904EF7900997A64 /* CloudAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudAnimation.swift; sourceTree = "<group>"; };
 		96C1FF012904F5C100997A64 /* StatusAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusAnimation.swift; sourceTree = "<group>"; };
+		96DA86D5290CE36A00913393 /* AuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthView.swift; sourceTree = "<group>"; };
+		96DA86D7290CE45C00913393 /* AuthModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthModel.swift; sourceTree = "<group>"; };
+		96DA86D9290CE4B500913393 /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
+		96DA86DB290CEA6600913393 /* GlassomorphismTextFieldStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassomorphismTextFieldStyle.swift; sourceTree = "<group>"; };
 		96E1DCC9290B78B6003EF11A /* OrderDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderDetailsView.swift; sourceTree = "<group>"; };
-		96E1DCCB290B7B09003EF11A /* ProfileModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileModel.swift; sourceTree = "<group>"; };
 		96F4226128FC40B10096E6F3 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		96F4226328FC40C10096E6F3 /* ProductDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDataService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -126,6 +132,7 @@
 		963BFBE328FB124400C7B182 /* Modules */ = {
 			isa = PBXGroup;
 			children = (
+				96DA86D4290CE35B00913393 /* Auth */,
 				963BFBE228FB122C00C7B182 /* Shop */,
 				969DE7A0290811E100BB704E /* Cart */,
 				969DAFA02900068200788882 /* Profile */,
@@ -216,6 +223,7 @@
 			isa = PBXGroup;
 			children = (
 				965D74B329027B2E00DDB373 /* UploadDataTextFieldStyle.swift */,
+				96DA86DB290CEA6600913393 /* GlassomorphismTextFieldStyle.swift */,
 			);
 			path = Design;
 			sourceTree = "<group>";
@@ -223,7 +231,6 @@
 		969DAFA02900068200788882 /* Profile */ = {
 			isa = PBXGroup;
 			children = (
-				96E1DCCB290B7B09003EF11A /* ProfileModel.swift */,
 				9653593328F9D4A600DE06B4 /* ProfileView.swift */,
 			);
 			path = Profile;
@@ -247,6 +254,16 @@
 				969DE7A62908163B00BB704E /* PositionSwipeView.swift */,
 			);
 			path = Position;
+			sourceTree = "<group>";
+		};
+		96DA86D4290CE35B00913393 /* Auth */ = {
+			isa = PBXGroup;
+			children = (
+				96DA86D7290CE45C00913393 /* AuthModel.swift */,
+				96DA86D9290CE4B500913393 /* AuthViewModel.swift */,
+				96DA86D5290CE36A00913393 /* AuthView.swift */,
+			);
+			path = Auth;
 			sourceTree = "<group>";
 		};
 		96E1DCC8290B78A2003EF11A /* Order */ = {
@@ -385,9 +402,9 @@
 				96C1FF022904F5C100997A64 /* StatusAnimation.swift in Sources */,
 				9653593228F9D49600DE06B4 /* CartView.swift in Sources */,
 				9653592B28F9D39900DE06B4 /* ColorTheme.swift in Sources */,
+				96DA86DC290CEA6600913393 /* GlassomorphismTextFieldStyle.swift in Sources */,
 				9653592E28F9D46500DE06B4 /* HomeView.swift in Sources */,
 				9653591F28F9D30200DE06B4 /* OnlineShopView.swift in Sources */,
-				96E1DCCC290B7B09003EF11A /* ProfileModel.swift in Sources */,
 				9616107028FBEB7000E6823D /* Double.swift in Sources */,
 				9622DFD12900E07200AAC8BE /* DragButton.swift in Sources */,
 				963BFBE928FB144E00C7B182 /* Settings.swift in Sources */,
@@ -398,6 +415,9 @@
 				9653593028F9D48700DE06B4 /* ShopView.swift in Sources */,
 				963BFBE528FB127200C7B182 /* ShopModel.swift in Sources */,
 				9622DFD32900E1D900AAC8BE /* UploadNewProductView.swift in Sources */,
+				96DA86D6290CE36A00913393 /* AuthView.swift in Sources */,
+				96DA86D8290CE45C00913393 /* AuthModel.swift in Sources */,
+				96DA86DA290CE4B500913393 /* AuthViewModel.swift in Sources */,
 				9653593428F9D4A600DE06B4 /* ProfileView.swift in Sources */,
 				9653591D28F9D30200DE06B4 /* OnlineShopCourseApp.swift in Sources */,
 				96F4226428FC40C10096E6F3 /* ProductDataService.swift in Sources */,

@@ -43,7 +43,7 @@ extension OnlineShopView {
     @ViewBuilder private var pages: some View {
         switch selectedTab {
         case .home:
-            HomeView()
+            AuthView()
         case .shop:
             ShopView()
         case .cart:
