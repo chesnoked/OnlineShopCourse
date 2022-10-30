@@ -15,9 +15,6 @@ import SwiftUI
 
 struct AuthView: View {
     @EnvironmentObject private var authVM: AuthViewModel
-    @State private var emailText: String = ""
-    @State private var passwordText: String = ""
-    @State private var confirmPasswordText: String = ""
     var body: some View {
         ZStack {
             VStack(spacing: 10) {
@@ -70,18 +67,18 @@ extension AuthView {
     }
     // user email
     private var email: some View {
-        TextField("email", text: $emailText)
+        TextField("email", text: $authVM.authFields.email)
             .glassomorphismTextFieldStyle()
     }
     // password
     private var password: some View {
-        SecureField("password", text: $passwordText)
+        SecureField("password", text: $authVM.authFields.password)
             .glassomorphismTextFieldStyle()
     }
     // confirm password
     @ViewBuilder private var confirmPassword: some View {
         if authVM.authMethod == .signup {
-            SecureField("confirm password", text: $confirmPasswordText)
+            SecureField("confirm password", text: $authVM.authFields.confirmPassword)
                 .glassomorphismTextFieldStyle()
         }
     }
@@ -107,14 +104,12 @@ extension AuthView {
             authVM.authMethod = .signup
         case .signup:
             authVM.authMethod = .signin
-        case .signout:
-            break
         }
     }
     // auth button
     private var authButton: some View {
         Button(action: {
-            //
+            authVM.authUser()
         }, label: {
             Text(authVM.authMethod.rawValue)
                 .font(.caption)

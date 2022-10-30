@@ -10,7 +10,12 @@ import Foundation
 enum AuthMethod: String {
     case signin = "Sign In"
     case signup = "Sign Up"
-    case signout = "Sign Out"
+}
+
+struct AuthFields {
+    var email: String = ""
+    var password: String = ""
+    var confirmPassword: String = ""
 }
 
 struct UserModel: Identifiable {
@@ -26,7 +31,7 @@ struct UserModel: Identifiable {
     let city: String?
     let address: String?
     
-    init(id: String, email: String, secondName: String? = nil, firstName: String? = nil, thirdName: String? = nil, phone: String? = nil, index: String? = nil, country: String? = nil, city: String? = nil, address: String? = nil) {
+    init(id: String = UUID().uuidString, email: String, secondName: String? = nil, firstName: String? = nil, thirdName: String? = nil, phone: String? = nil, index: String? = nil, country: String? = nil, city: String? = nil, address: String? = nil) {
         self.id = id
         self.email = email
         self.secondName = secondName
