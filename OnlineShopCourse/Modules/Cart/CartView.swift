@@ -58,18 +58,18 @@ extension CartView {
         .background(Color.palette.child.ignoresSafeArea())
     }
     // upload order
-    private var uploadOrder: some View {
-        Button(action: {
-            showOrderDetailsView.toggle()
-        }, label: {
-            if cartVM.orderValidity {
+    @ViewBuilder private var uploadOrder: some View {
+        if !cartVM.order.isEmpty {
+            Button(action: {
+                showOrderDetailsView.toggle()
+            }, label: {
                 CloudAnimation()
-            } else {
-                Image(systemName: "icloud.and.arrow.up")
-                    .foregroundColor(Color.palette.parent)
-                    .bold()
-            }
-        })
+            })
+        } else {
+            Image(systemName: "icloud.and.arrow.up")
+                .foregroundColor(Color.palette.parent)
+                .bold()
+        }
     }
     // total
     private var total: some View {

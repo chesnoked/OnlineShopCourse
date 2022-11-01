@@ -9,6 +9,10 @@ import Foundation
 
 class AuthViewModel: ObservableObject {
     
+    init() {
+        getUser()
+    }
+    
     private let userDataService = UserDataService.shared
     
     @Published var user: UserModel?
@@ -25,6 +29,21 @@ class AuthViewModel: ObservableObject {
         case .signup: guard authFields.confirmPassword == authFields.password else { return false }
         }
         return true
+    }
+    
+    // MARK: get user when app at start
+    private func getUser() {
+        guard let user = userDataService.currentUser else { return }
+        userDataService.downloadUserData(user: user) { result in
+            switch result {
+            case .success(let user):
+                print("user start as: \(user.email)")
+                print("user start as: \(user.id)")
+                self.user = user
+            case .failure(_):
+                break
+            }
+        }
     }
     
     // MARK: auth user

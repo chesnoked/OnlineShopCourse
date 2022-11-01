@@ -34,6 +34,8 @@ struct OrderDetailsView: View {
                     userAddress
                 }
                 orderNotes
+                checkout
+                    .padding(.top)
             }
             .frame(width: UIScreen.main.bounds.width * 0.66)
             .padding(.top, 30)
@@ -168,6 +170,16 @@ extension OrderDetailsView {
             .font(.caption)
             .bold()
             .padding(.trailing, 5)
+    }
+    // checkout
+    private var checkout: some View {
+        Button(action: {
+            //
+        }, label: {
+            Text("Checkout: \(cartVM.total.twoDecimalPlaces()) ₽")
+                .font(.headline)
+                .foregroundColor(Color.palette.parent)
+        })
     }
     // drag button
     private var dragButton: some View {

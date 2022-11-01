@@ -43,6 +43,21 @@ struct UserModel: Identifiable {
         self.city = city
         self.address = address
     }
+    
+    var data: [String:Any] {
+        var data: [String:Any] = [:]
+        data["id"] = id
+        data["email"] = email
+        data["second_name"] = secondName ?? ""
+        data["first_name"] = firstName ?? ""
+        data["third_name"] = thirdName ?? ""
+        data["phone"] = phone ?? ""
+        data["index"] = index ?? ""
+        data["country"] = country ?? ""
+        data["city"] = city ?? ""
+        data["address"] = address ?? ""
+        return data
+    }
 }
 
 struct NewUser {
