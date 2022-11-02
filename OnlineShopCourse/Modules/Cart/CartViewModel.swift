@@ -9,7 +9,9 @@ import Foundation
 
 class CartViewModel: ObservableObject {
     
-    @Published var newOrder: NewOrder = NewOrder()
+    private let userDataService = UserDataService.shared
+    
+    @Published var orderDetails: OrderDetails = OrderDetails()
     @Published var order: [PositionModel] = []
     
     // MARK: order total cost
@@ -23,7 +25,17 @@ class CartViewModel: ObservableObject {
     
     // MARK: check on order is valid
     var orderValidity: Bool {
-        return !order.isEmpty
+        guard !orderDetails.secondName.isEmpty,
+              !orderDetails.firstName.isEmpty,
+              !orderDetails.thirdName.isEmpty,
+              !orderDetails.email.isEmpty,
+              !orderDetails.phone.isEmpty,
+              !orderDetails.index.isEmpty,
+              !orderDetails.country.isEmpty,
+              !orderDetails.city.isEmpty,
+              !orderDetails.address.isEmpty
+        else { return false }
+        return true
     }
     
     // MARK: add to cart
@@ -37,6 +49,33 @@ class CartViewModel: ObservableObject {
         guard let index = order.firstIndex(where: { onePosition in position.id == onePosition.id })
         else { return 0 }
         return index
+    }
+    
+    // MARK: get user details
+    private func getUser() -> UserModel? {
+        guard orderValidity else { return nil }
+        return UserModel(email: orderDetails.email,
+                         secondName: orderDetails.secondName,
+                         firstName: orderDetails.firstName,
+                         thirdName: orderDetails.thirdName,
+                         phone: orderDetails.phone,
+                         index: orderDetails.index,
+                         country: orderDetails.country,
+                         city: orderDetails.city,
+                         address: orderDetails.address)
+    }
+    
+    // MARK: upload order
+    func uploadOrder() {
+        guard let user = getUser() else { return }
+        userDataService.uploadUserData(user: user) { result in
+            switch result {
+            case .success(_):
+                break
+            case .failure(_):
+                break
+            }
+        }
     }
     
     // MARK: reset order

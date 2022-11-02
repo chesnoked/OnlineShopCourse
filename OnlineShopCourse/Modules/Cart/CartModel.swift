@@ -7,6 +7,7 @@
 
 import Foundation
 
+// MARK: position
 struct PositionModel: Identifiable {
     
     let id: String
@@ -23,6 +24,20 @@ struct PositionModel: Identifiable {
     }
 }
 
+// MARK: order
+struct OrderDetails {
+    var email: String = ""
+    var secondName: String = ""
+    var firstName: String = ""
+    var thirdName: String = ""
+    var phone: String = ""
+    var index: String = ""
+    var country: String = ""
+    var city: String = ""
+    var address: String = ""
+    var notes: String = ""
+}
+
 struct OrderModel: Identifiable {
     let id: String
     let number: String
@@ -30,9 +45,4 @@ struct OrderModel: Identifiable {
     let user: UserModel
     let positions: [PositionModel]
     let notes: String
-}
-
-struct NewOrder {
-    var user: NewUser = NewUser()
-    var notes: String = ""
 }

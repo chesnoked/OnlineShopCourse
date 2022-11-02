@@ -27,6 +27,7 @@ struct OrderDetailsView: View {
                     firstName
                     thirdName
                     userEmail
+                        .disabled(true)
                     userPhone
                     userIndex
                     userCountry
@@ -50,89 +51,89 @@ struct OrderDetailsView: View {
 extension OrderDetailsView {
     // user second name
     private var secondName: some View {
-        TextField("second name", text: $cartVM.newOrder.user.secondName)
+        TextField("second name", text: $cartVM.orderDetails.secondName)
             .uploadDataTextFieldStyle()
             .overlay(alignment: .trailing) {
                 checkmark
-                    .foregroundColor(cartVM.newOrder.user.secondName.isEmpty ? .clear : Color.palette.parent)
+                    .foregroundColor(cartVM.orderDetails.secondName.isEmpty ? .clear : Color.palette.parent)
             }
     }
     // user first name
     private var firstName: some View {
-        TextField("first name", text: $cartVM.newOrder.user.firstName)
+        TextField("first name", text: $cartVM.orderDetails.firstName)
             .uploadDataTextFieldStyle()
             .overlay(alignment: .trailing) {
                 checkmark
-                    .foregroundColor(cartVM.newOrder.user.firstName.isEmpty ? .clear : Color.palette.parent)
+                    .foregroundColor(cartVM.orderDetails.firstName.isEmpty ? .clear : Color.palette.parent)
             }
     }
     // user third name
     private var thirdName: some View {
-        TextField("third name", text: $cartVM.newOrder.user.thirdName)
+        TextField("third name", text: $cartVM.orderDetails.thirdName)
             .uploadDataTextFieldStyle()
             .overlay(alignment: .trailing) {
                 checkmark
-                    .foregroundColor(cartVM.newOrder.user.thirdName.isEmpty ? .clear : Color.palette.parent)
+                    .foregroundColor(cartVM.orderDetails.thirdName.isEmpty ? .clear : Color.palette.parent)
             }
     }
     // user email
     private var userEmail: some View {
-        TextField("email", text: $cartVM.newOrder.user.email)
+        TextField("email", text: $cartVM.orderDetails.email)
             .uploadDataTextFieldStyle()
             .overlay(alignment: .trailing) {
                 checkmark
-                    .foregroundColor(cartVM.newOrder.user.email.isEmpty ? .clear : Color.palette.parent)
+                    .foregroundColor(cartVM.orderDetails.email.isEmpty ? .clear : Color.palette.parent)
             }
     }
     // user phone
     private var userPhone: some View {
-        TextField("phone", text: $cartVM.newOrder.user.phone)
+        TextField("phone", text: $cartVM.orderDetails.phone)
             .uploadDataTextFieldStyle()
             .overlay(alignment: .trailing) {
                 checkmark
-                    .foregroundColor(cartVM.newOrder.user.phone.isEmpty ? .clear : Color.palette.parent)
+                    .foregroundColor(cartVM.orderDetails.phone.isEmpty ? .clear : Color.palette.parent)
             }
     }
     // user index
     private var userIndex: some View {
-        TextField("index", text: $cartVM.newOrder.user.index)
+        TextField("index", text: $cartVM.orderDetails.index)
             .uploadDataTextFieldStyle()
             .overlay(alignment: .trailing) {
                 checkmark
-                    .foregroundColor(cartVM.newOrder.user.index.isEmpty ? .clear : Color.palette.parent)
+                    .foregroundColor(cartVM.orderDetails.index.isEmpty ? .clear : Color.palette.parent)
             }
     }
     // user country
     private var userCountry: some View {
-        TextField("country", text: $cartVM.newOrder.user.country)
+        TextField("country", text: $cartVM.orderDetails.country)
             .uploadDataTextFieldStyle()
             .overlay(alignment: .trailing) {
                 checkmark
-                    .foregroundColor(cartVM.newOrder.user.country.isEmpty ? .clear : Color.palette.parent)
+                    .foregroundColor(cartVM.orderDetails.country.isEmpty ? .clear : Color.palette.parent)
             }
     }
     // user city
     private var userCity: some View {
-        TextField("city", text: $cartVM.newOrder.user.city)
+        TextField("city", text: $cartVM.orderDetails.city)
             .uploadDataTextFieldStyle()
             .overlay(alignment: .trailing) {
                 checkmark
-                    .foregroundColor(cartVM.newOrder.user.city.isEmpty ? .clear : Color.palette.parent)
+                    .foregroundColor(cartVM.orderDetails.city.isEmpty ? .clear : Color.palette.parent)
             }
     }
     // user address
     private var userAddress: some View {
-        TextField("address", text: $cartVM.newOrder.user.address)
+        TextField("address", text: $cartVM.orderDetails.address)
             .uploadDataTextFieldStyle()
             .overlay(alignment: .trailing) {
                 checkmark
-                    .foregroundColor(cartVM.newOrder.user.address.isEmpty ? .clear : Color.palette.parent)
+                    .foregroundColor(cartVM.orderDetails.address.isEmpty ? .clear : Color.palette.parent)
             }
     }
     // order notes
     private var orderNotes: some View {
         ZStack(alignment: .topLeading) {
-            TextEditor(text: $cartVM.newOrder.notes)
+            TextEditor(text: $cartVM.orderDetails.notes)
                 .font(.system(size: 16, weight: .medium, design: .rounded))
                 .foregroundColor(Color.palette.parent.opacity(0.88))
                 .cornerRadius(5)
@@ -145,7 +146,7 @@ extension OrderDetailsView {
                             lineWidth: 1.0
                         )
                 }
-            if cartVM.newOrder.notes.isEmpty {
+            if cartVM.orderDetails.notes.isEmpty {
                 Text("notes")
                     .font(.system(size: 16, weight: .medium, design: .rounded))
                     .foregroundColor(Color.gray.opacity(0.55))
@@ -172,14 +173,16 @@ extension OrderDetailsView {
             .padding(.trailing, 5)
     }
     // checkout
-    private var checkout: some View {
-        Button(action: {
-            //
-        }, label: {
-            Text("Checkout: \(cartVM.total.twoDecimalPlaces()) ₽")
-                .font(.headline)
-                .foregroundColor(Color.palette.parent)
-        })
+    @ViewBuilder private var checkout: some View {
+        if cartVM.orderValidity {
+            Button(action: {
+                cartVM.uploadOrder()
+            }, label: {
+                Text("Checkout: \(cartVM.total.twoDecimalPlaces()) ₽")
+                    .font(.headline)
+                    .foregroundColor(Color.palette.parent)
+            })
+        }
     }
     // drag button
     private var dragButton: some View {

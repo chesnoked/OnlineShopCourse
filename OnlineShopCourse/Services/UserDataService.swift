@@ -26,7 +26,7 @@ class UserDataService {
     }
     
     // MARK: upload user data to Firebase Firestore
-    private func uploadUserData(user: UserModel, completion: @escaping (Result<UserModel, Error>) -> Void) {
+    func uploadUserData(user: UserModel, completion: @escaping (Result<UserModel, Error>) -> Void) {
         users.document(user.email).setData(user.data) { error in
             if let error = error {
                 completion(.failure(error))
@@ -66,8 +66,7 @@ class UserDataService {
                 return
             }
             guard let data = docSnap.data() else { return }
-            let user = UserModel(id: data["id"] as? String ?? "",
-                                 email: data["email"] as? String ?? "",
+            let user = UserModel(email: data["email"] as? String ?? "",
                                  secondName: data["second_name"] as? String,
                                  firstName: data["first_name"] as? String,
                                  thirdName: data["third_name"] as? String,

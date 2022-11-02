@@ -18,9 +18,8 @@ struct AuthFields {
     var confirmPassword: String = ""
 }
 
-struct UserModel: Identifiable {
+struct UserModel {
     
-    let id: String
     let email: String
     let secondName: String?
     let firstName: String?
@@ -31,8 +30,7 @@ struct UserModel: Identifiable {
     let city: String?
     let address: String?
     
-    init(id: String = UUID().uuidString, email: String, secondName: String? = nil, firstName: String? = nil, thirdName: String? = nil, phone: String? = nil, index: String? = nil, country: String? = nil, city: String? = nil, address: String? = nil) {
-        self.id = id
+    init(email: String, secondName: String? = nil, firstName: String? = nil, thirdName: String? = nil, phone: String? = nil, index: String? = nil, country: String? = nil, city: String? = nil, address: String? = nil) {
         self.email = email
         self.secondName = secondName
         self.firstName = firstName
@@ -46,7 +44,6 @@ struct UserModel: Identifiable {
     
     var data: [String:Any] {
         var data: [String:Any] = [:]
-        data["id"] = id
         data["email"] = email
         data["second_name"] = secondName ?? ""
         data["first_name"] = firstName ?? ""
@@ -58,16 +55,4 @@ struct UserModel: Identifiable {
         data["address"] = address ?? ""
         return data
     }
-}
-
-struct NewUser {
-    var email: String = ""
-    var secondName: String = ""
-    var firstName: String = ""
-    var thirdName: String = ""
-    var phone: String = ""
-    var index: String = ""
-    var country: String = ""
-    var city: String = ""
-    var address: String = ""
 }

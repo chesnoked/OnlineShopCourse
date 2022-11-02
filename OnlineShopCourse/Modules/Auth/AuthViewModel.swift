@@ -38,7 +38,6 @@ class AuthViewModel: ObservableObject {
             switch result {
             case .success(let user):
                 print("user start as: \(user.email)")
-                print("user start as: \(user.id)")
                 self.user = user
             case .failure(_):
                 break

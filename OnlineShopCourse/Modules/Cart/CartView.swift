@@ -14,6 +14,7 @@
 import SwiftUI
 
 struct CartView: View {
+    @EnvironmentObject private var authVM: AuthViewModel
     @EnvironmentObject private var shopVM: ShopViewModel
     @EnvironmentObject private var cartVM: CartViewModel
     @State private var selectedPosition: PositionModel? = nil
@@ -22,6 +23,9 @@ struct CartView: View {
         ZStack {
             // order details
             orderDetails
+                .onAppear {
+                    getUserDetails()
+                }
             VStack(spacing: 0) {
                 // nav bar
                 navBar
@@ -32,6 +36,18 @@ struct CartView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.palette.parent.ignoresSafeArea())
+    }
+    // get user details
+    private func getUserDetails() {
+        cartVM.orderDetails.secondName = authVM.user?.secondName ?? ""
+        cartVM.orderDetails.firstName = authVM.user?.firstName ?? ""
+        cartVM.orderDetails.thirdName = authVM.user?.thirdName ?? ""
+        cartVM.orderDetails.email = authVM.user?.email ?? ""
+        cartVM.orderDetails.phone = authVM.user?.phone ?? ""
+        cartVM.orderDetails.index = authVM.user?.index ?? ""
+        cartVM.orderDetails.country = authVM.user?.country ?? ""
+        cartVM.orderDetails.city = authVM.user?.city ?? ""
+        cartVM.orderDetails.address = authVM.user?.address ?? ""
     }
 }
 
