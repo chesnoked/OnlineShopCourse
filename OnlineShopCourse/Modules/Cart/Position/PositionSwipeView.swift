@@ -59,7 +59,7 @@ struct PositionSwipeView: View {
     }
     // delete position
     private func deletePosition() {
-        cartVM.order.removeAll(where: { onePosition in position.id == onePosition.id })
+        cartVM.positions.removeAll(where: { onePosition in position.id == onePosition.id })
     }
 }
 
@@ -215,10 +215,10 @@ extension PositionView {
         switch changeMode {
         case .minus:
             guard position.amount > 1 && position.amount <= 10 else { return }
-            cartVM.order[cartVM.getPositionIndex(position: position)].amount -= 1
+            cartVM.positions[cartVM.getPositionIndex(position: position)].amount -= 1
         case .plus:
             guard position.amount >= 1 && position.amount < 10 else { return }
-            cartVM.order[cartVM.getPositionIndex(position: position)].amount += 1
+            cartVM.positions[cartVM.getPositionIndex(position: position)].amount += 1
         }
     }
 }

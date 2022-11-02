@@ -148,7 +148,7 @@ extension ProductDetailView {
     // change product amount
     private func changeProductAmount(to newValue: UInt8) {
         guard let position = position else { return }
-        cartVM.order[cartVM.getPositionIndex(position: position)].amount = newValue
+        cartVM.positions[cartVM.getPositionIndex(position: position)].amount = newValue
     }
 }
 

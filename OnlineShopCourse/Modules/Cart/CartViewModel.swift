@@ -10,14 +10,15 @@ import Foundation
 class CartViewModel: ObservableObject {
     
     private let userDataService = UserDataService.shared
+    private let orderDataService = OrderDataService.shared
     
     @Published var orderDetails: OrderDetails = OrderDetails()
-    @Published var order: [PositionModel] = []
+    @Published var positions: [PositionModel] = []
     
     // MARK: order total cost
     var total: Double {
         var total: Double = 0
-        for position in order {
+        for position in positions {
             total = total + position.cost
         }
         return total
@@ -41,12 +42,12 @@ class CartViewModel: ObservableObject {
     // MARK: add to cart
     func addToCart(product: ProductModel, amount: UInt8) {
         let position = PositionModel(product: product, amount: amount)
-        order.append(position)
+        positions.append(position)
     }
     
     // MARK: get position index in order
     func getPositionIndex(position: PositionModel) -> Int {
-        guard let index = order.firstIndex(where: { onePosition in position.id == onePosition.id })
+        guard let index = positions.firstIndex(where: { onePosition in position.id == onePosition.id })
         else { return 0 }
         return index
     }
@@ -70,8 +71,16 @@ class CartViewModel: ObservableObject {
         guard let user = getUser() else { return }
         userDataService.uploadUserData(user: user) { result in
             switch result {
-            case .success(_):
-                break
+            case .success(let user):
+                let order = OrderModel(user: user, positions: self.positions, notes: self.orderDetails.notes)
+                self.orderDataService.uploadOrder(order: order) { result in
+                    switch result {
+                    case .success(let order):
+                        print("Successfully uploaded order: \(order.number)")
+                    case .failure(_):
+                        break
+                    }
+                }
             case .failure(_):
                 break
             }
@@ -80,6 +89,6 @@ class CartViewModel: ObservableObject {
     
     // MARK: reset order
     func resetOrder() {
-        order.removeAll()
+        positions.removeAll()
     }
 }

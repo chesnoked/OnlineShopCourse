@@ -75,7 +75,7 @@ extension CartView {
     }
     // upload order
     @ViewBuilder private var uploadOrder: some View {
-        if !cartVM.order.isEmpty {
+        if !cartVM.positions.isEmpty {
             Button(action: {
                 showOrderDetailsView.toggle()
             }, label: {
@@ -107,8 +107,8 @@ extension CartView {
     private var positions: some View {
         ScrollView(.vertical, showsIndicators: true) {
             VStack(spacing: 10) {
-                ForEach(cartVM.order) { position in
-                    PositionSwipeView(position: $cartVM.order[cartVM.getPositionIndex(position: position)])
+                ForEach(cartVM.positions) { position in
+                    PositionSwipeView(position: $cartVM.positions[cartVM.getPositionIndex(position: position)])
                         .onTapGesture {
                             selectedPosition = position
                         }
