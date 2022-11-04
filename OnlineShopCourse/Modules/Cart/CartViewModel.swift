@@ -12,8 +12,13 @@ class CartViewModel: ObservableObject {
     private let userDataService = UserDataService.shared
     private let orderDataService = OrderDataService.shared
     
+    @Published var orders: [OrderModel] = []
     @Published var orderDetails: OrderDetails = OrderDetails()
     @Published var positions: [PositionModel] = []
+    
+    init() {
+        downloadOrders()
+    }
     
     // MARK: order total cost
     var total: Double {
@@ -45,9 +50,16 @@ class CartViewModel: ObservableObject {
         positions.append(position)
     }
     
-    // MARK: get position index in order
+    // MARK: get position index in positions
     func getPositionIndex(position: PositionModel) -> Int {
         guard let index = positions.firstIndex(where: { onePosition in position.id == onePosition.id })
+        else { return 0 }
+        return index
+    }
+    
+    // MARK: get order index in orders
+    func getOrderIndex(order: OrderModel) -> Int {
+        guard let index = orders.firstIndex(where: { oneOrder in order.id == oneOrder.id })
         else { return 0 }
         return index
     }
@@ -76,11 +88,24 @@ class CartViewModel: ObservableObject {
                 self.orderDataService.uploadOrder(order: order) { result in
                     switch result {
                     case .success(let order):
-                        print("Successfully uploaded order: \(order.number)")
+                        print("Successfully uploaded order: \(order.id)")
                     case .failure(_):
                         break
                     }
                 }
+            case .failure(_):
+                break
+            }
+        }
+    }
+    
+    // MARK: download orders
+    func downloadOrders() {
+        guard let user = userDataService.currentUser else { return }
+        orderDataService.downloadOrders(user: user) { result in
+            switch result {
+            case .success(let orders):
+                self.orders = orders
             case .failure(_):
                 break
             }

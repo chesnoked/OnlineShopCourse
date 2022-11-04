@@ -18,6 +18,25 @@ class OrderDataService {
         return database.collection("orders")
     }
     
+    // MARK: download all orders from Firebase Firestore
+    func downloadOrders(user: UserModel, completion: @escaping (Result<[OrderModel], Error>) -> Void) {
+        orders.getDocuments { querySnap, error in
+            guard let querySnap = querySnap else {
+                if let error = error {
+                    completion(.failure(error))
+                }
+                return
+            }
+            var orders: [OrderModel] = []
+            for document in querySnap.documents {
+                if let order = OrderModel(doc: document) {
+                    orders.append(order)
+                }
+            }
+            completion(.success(orders))
+        }
+    }
+    
     // MARK: upload order to Firebase Firestore
     func uploadOrder(order: OrderModel, completion: @escaping (Result<OrderModel, Error>) -> Void) {
         uploadOrderData(order: order) { result in
@@ -39,7 +58,7 @@ class OrderDataService {
     
     // MARK: upload order data to Firebase Firestore
     private func uploadOrderData(order: OrderModel, completion: @escaping (Result<OrderModel, Error>) -> Void) {
-        orders.document(order.number).setData(order.data) { error in
+        orders.document(order.id).setData(order.data) { error in
             if let error = error {
                 completion(.failure(error))
             } else {
@@ -50,7 +69,7 @@ class OrderDataService {
     
     // MARK: upload order positions to Firebase Firestore
     private func uploadOrderPositions(order: OrderModel, completion: @escaping (Result<OrderModel, Error>) -> Void) {
-        let positions = orders.document(order.number).collection("positions")
+        let positions = orders.document(order.id).collection("positions")
         for position in order.positions {
             positions.document(position.id).setData(position.data) { error in
                 if let error = error {

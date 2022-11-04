@@ -51,8 +51,7 @@ class ProductDataService {
             }
             guard let data = docSnapshot.data() else { return }
             
-            guard let id: String = data["id"] as? String,
-                  let article: String = data["article"] as? String,
+            guard let article: String = data["article"] as? String,
                   let categoryRawValue: String = data["category"] as? String,
                   let category: Categories = Categories.init(rawValue: categoryRawValue),
                   let brandRawValue: String = data["brand"] as? String,
@@ -61,8 +60,8 @@ class ProductDataService {
                   let description: String = data["description"] as? String,
                   let cost: Double = data["cost"] as? Double
             else { return }
-            
-            let product: ProductModel = ProductModel(id: id, article: article, category: category, brand: brand, name: name, description: description, cost: cost)
+                  
+            let product: ProductModel = ProductModel(article: article, category: category, brand: brand, name: name, description: description, cost: cost)
             completion(.success(product))
         }
     }

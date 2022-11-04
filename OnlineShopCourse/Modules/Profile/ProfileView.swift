@@ -14,17 +14,18 @@ struct ProfileView_Previews: PreviewProvider {
 import SwiftUI
 
 struct ProfileView: View {
+    @EnvironmentObject private var cartVM: CartViewModel
     @State private var myColorTheme: MyColorTheme = MyColorTheme()
     @State private var parentColor: Color = Color.palette.parent
     @State private var childColor: Color = Color.palette.child
     var body: some View {
         ZStack {
-            // color theme changer
-            colorThemeChanger
             VStack(spacing: 0) {
-                Text("Profile")
-                    .font(.largeTitle)
-                    .foregroundColor(Color.palette.child)
+                // color theme changer
+                colorThemeChanger
+                // orders
+                orders
+                    .padding(.vertical)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -35,25 +36,35 @@ struct ProfileView: View {
 extension ProfileView {
     // color theme changer
     private var colorThemeChanger: some View {
-        VStack(spacing: 0) {
-            HStack(spacing: 0) {
-                // parent color picker
-                ColorPicker(selection: $parentColor, supportsOpacity: true, label: { })
-                    .onChange(of: parentColor) { newParentColor in
-                        myColorTheme.saveColor(color: newParentColor, forKey: "parent_color")
-                    }
-                Spacer()
-                Button(action: { myColorTheme.defaultColorTheme() }, label: { Text("set to default").foregroundColor(Color.palette.child) })
-                Spacer()
-                // child color picker
-                ColorPicker(selection: $childColor, supportsOpacity: true, label: { })
-                    .onChange(of: childColor) { newChildColor in
-                        myColorTheme.saveColor(color: newChildColor, forKey: "child_color")
-                    }
-            }
-            .labelsHidden()
-            .padding([.horizontal, .vertical])
+        HStack(spacing: 0) {
+            // parent color picker
+            ColorPicker(selection: $parentColor, supportsOpacity: true, label: { })
+                .onChange(of: parentColor) { newParentColor in
+                    myColorTheme.saveColor(color: newParentColor, forKey: "parent_color")
+                }
             Spacer()
+            Button(action: { myColorTheme.defaultColorTheme() }, label: { Text("set to default").foregroundColor(Color.palette.child) })
+            Spacer()
+            // child color picker
+            ColorPicker(selection: $childColor, supportsOpacity: true, label: { })
+                .onChange(of: childColor) { newChildColor in
+                    myColorTheme.saveColor(color: newChildColor, forKey: "child_color")
+                }
+        }
+        .labelsHidden()
+        .padding([.horizontal, .vertical])
+    }
+    // orders
+    private var orders: some View {
+        ScrollView(.vertical, showsIndicators: true) {
+            VStack(spacing: 10) {
+                ForEach(cartVM.orders) { order in
+                    OrderPositionView(order: $cartVM.orders[cartVM.getOrderIndex(order: order)])
+                }
+            }
+        }
+        .onAppear {
+            cartVM.downloadOrders()
         }
     }
 }

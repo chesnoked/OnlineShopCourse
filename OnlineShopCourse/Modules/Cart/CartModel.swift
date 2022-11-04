@@ -26,7 +26,7 @@ struct PositionModel: Identifiable {
     
     var data: [String:Any] {
         var data: [String:Any] = [:]
-        data["product_article"] = product.article
+        data["product_article"] = product.id
         data["product_name"] = product.name
         data["product_cost"] = product.cost
         data["amount"] = amount
@@ -49,21 +49,13 @@ struct OrderDetails {
     var notes: String = ""
 }
 
-struct OrderModel {
+struct OrderModel: Identifiable {
     
-    let number: String
+    let id: String
     let date: Date
     let user: UserModel
-    let positions: [PositionModel]
+    var positions: [PositionModel] = []
     let notes: String
-    
-    init(number: String = String((1000000...9999999).randomElement()!), date: Date = Date(), user: UserModel, positions: [PositionModel], notes: String) {
-        self.number = number
-        self.date = date
-        self.user = user
-        self.positions = positions
-        self.notes = notes
-    }
     
     var total: Double {
         var total: Double = 0
@@ -73,12 +65,34 @@ struct OrderModel {
         return total
     }
     
+    init(number: String = String((1000000...9999999).randomElement()!), date: Date = Date(), user: UserModel, positions: [PositionModel], notes: String) {
+        self.id = number
+        self.date = date
+        self.user = user
+        self.positions = positions
+        self.notes = notes
+    }
+    
+    init?(doc: QueryDocumentSnapshot) {
+        let data = doc.data()
+        
+        guard let id = data["number"] as? String,
+              let date = data["date"] as? Timestamp,
+              let userID = data["user_id"] as? String,
+              let notes = data["notes"] as? String
+        else { return nil }
+        
+        self.id = id
+        self.date = date.dateValue()
+        self.user = UserModel(email: userID)
+        self.notes = notes
+    }
+    
     var data: [String:Any] {
         var data: [String:Any] = [:]
-        data["number"] = number
+        data["number"] = id
         data["date"] = Timestamp(date: date)
         data["user_id"] = user.email
-        data["total"] = total
         data["notes"] = notes
         return data
     }

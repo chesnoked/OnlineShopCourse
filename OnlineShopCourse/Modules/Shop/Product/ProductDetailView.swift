@@ -79,7 +79,7 @@ extension ProductDetailView {
     }
     // product article
     private var productArticle: some View {
-        Text("ID: \(product.article)")
+        Text("ID: \(product.id)")
             .font(.caption)
             .bold()
             .foregroundColor(Color.palette.child)
