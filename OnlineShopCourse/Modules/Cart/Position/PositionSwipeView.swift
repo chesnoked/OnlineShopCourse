@@ -121,21 +121,21 @@ extension PositionView {
     }
     // product category
     private var productCategory: some View {
-        Text(position.product.category.rawValue)
+        Text(position.product.category?.rawValue ?? "")
             .font(.caption)
             .bold()
             .foregroundColor(Color.palette.parent)
     }
     // product brand
     private var productBrand: some View {
-        Text(position.product.brand.rawValue)
+        Text(position.product.brand?.rawValue ?? "")
             .font(.caption)
             .bold()
             .foregroundColor(Color.palette.parent)
     }
     // product name
     private var productName: some View {
-        Text(position.product.name)
+        Text(position.product.name ?? "")
             .lineLimit(1)
             .font(.headline)
             .foregroundColor(Color.palette.parent)

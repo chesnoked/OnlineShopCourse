@@ -17,7 +17,7 @@ class CartViewModel: ObservableObject {
     @Published var positions: [PositionModel] = []
     
     init() {
-        downloadOrders()
+        getOrders()
     }
     
     // MARK: order total cost
@@ -100,12 +100,22 @@ class CartViewModel: ObservableObject {
     }
     
     // MARK: download orders
-    func downloadOrders() {
+    func getOrders() {
         guard let user = userDataService.currentUser else { return }
         orderDataService.downloadOrders(user: user) { result in
             switch result {
             case .success(let orders):
                 self.orders = orders
+                for (index, order) in self.orders.enumerated() {
+                    self.orderDataService.downloadOrderPositions(order: order) { result in
+                        switch result {
+                        case .success(let positions):
+                            self.orders[index].positions = positions
+                        case .failure(_):
+                            break
+                        }
+                    }
+                }
             case .failure(_):
                 break
             }

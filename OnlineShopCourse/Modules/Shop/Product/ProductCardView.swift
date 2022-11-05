@@ -42,14 +42,14 @@ extension ProductCardView {
     }
     // product brand
     private var productBrand: some View {
-        Text(product.brand.rawValue)
+        Text(product.brand?.rawValue ?? "")
             .font(.caption)
             .bold()
             .foregroundColor(Color.palette.child)
     }
     // product name
     private var productName: some View {
-        Text(product.name)
+        Text(product.name ?? "")
             .lineLimit(1)
             .font(.headline)
             .foregroundColor(Color.palette.child)

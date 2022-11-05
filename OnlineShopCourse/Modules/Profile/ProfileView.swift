@@ -64,7 +64,7 @@ extension ProfileView {
             }
         }
         .onAppear {
-            cartVM.downloadOrders()
+            cartVM.getOrders()
         }
     }
 }

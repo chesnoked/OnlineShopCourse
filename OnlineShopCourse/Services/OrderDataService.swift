@@ -37,6 +37,26 @@ class OrderDataService {
         }
     }
     
+    // MARK: download one order positions from Firebase Firestore
+    func downloadOrderPositions(order: OrderModel, completion: @escaping (Result<[PositionModel], Error>) -> Void) {
+        let positions = orders.document(order.id).collection("positions")
+        positions.getDocuments { querySnap, error in
+            guard let querySnap = querySnap else {
+                if let error = error {
+                    completion(.failure(error))
+                }
+                return
+            }
+            var positions: [PositionModel] = []
+            for document in querySnap.documents {
+                if let position = PositionModel(doc: document) {
+                    positions.append(position)
+                }
+            }
+            completion(.success(positions))
+        }
+    }
+    
     // MARK: upload order to Firebase Firestore
     func uploadOrder(order: OrderModel, completion: @escaping (Result<OrderModel, Error>) -> Void) {
         uploadOrderData(order: order) { result in

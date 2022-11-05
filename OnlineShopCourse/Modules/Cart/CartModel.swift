@@ -11,31 +11,60 @@ import FirebaseFirestore
 // MARK: position
 struct PositionModel: Identifiable {
     
-    let id: String
+    let id: String = UUID().uuidString
     let product: ProductModel
     var amount: UInt8
     var cost: Double {
         return product.cost * Double(amount)
     }
     
-    init(id: String = UUID().uuidString, product: ProductModel, amount: UInt8) {
-        self.id = id
+    init(product: ProductModel, amount: UInt8) {
         self.product = product
+        self.amount = amount
+    }
+    
+    init?(doc: QueryDocumentSnapshot) {
+        let data = doc.data()
+        
+        guard let productArticle = data["product_article"] as? String,
+              let productCost = data["product_cost"] as? Double,
+              let amount = data["amount"] as? UInt8
+        else { return nil }
+        
+        self.product = ProductModel(article: productArticle, cost: productCost)
         self.amount = amount
     }
     
     var data: [String:Any] {
         var data: [String:Any] = [:]
         data["product_article"] = product.id
-        data["product_name"] = product.name
         data["product_cost"] = product.cost
         data["amount"] = amount
-        data["cost"] = cost
         return data
     }
 }
 
 // MARK: order
+
+enum OrderStatus: String {
+    // 1. Новый заказ. Ожидает подтверждения.
+    case new = "На подтверждении."
+    // 2. Заказ подтверждён и ожидает оплаты.
+    case paying = "Подтвержден и ожидает оплаты."
+    // 3. Оплачен.
+    case paid = "Оплачен и готовится к отправке."
+    // 4. Готовится к отправке (на сборке).
+    case building = "Готовится к отправке. На сборке."
+    // 5. Отправлен.
+    case sent = "Отправлен."
+    // 6. Доставлен (до пункта выдачи).
+    case delivered = "Доставлен до пункта."
+    // 7. Получен (абонентом).
+    case get = "Получен."
+    // 8. Выполнен.
+    case completed = "Выполнен."
+}
+
 struct OrderDetails {
     var email: String = ""
     var secondName: String = ""
@@ -56,6 +85,7 @@ struct OrderModel: Identifiable {
     let user: UserModel
     var positions: [PositionModel] = []
     let notes: String
+    let status: OrderStatus
     
     var total: Double {
         var total: Double = 0
@@ -65,12 +95,13 @@ struct OrderModel: Identifiable {
         return total
     }
     
-    init(number: String = String((1000000...9999999).randomElement()!), date: Date = Date(), user: UserModel, positions: [PositionModel], notes: String) {
+    init(number: String = String((1000000...9999999).randomElement()!), date: Date = Date(), user: UserModel, positions: [PositionModel], notes: String, status: OrderStatus = OrderStatus.new) {
         self.id = number
         self.date = date
         self.user = user
         self.positions = positions
         self.notes = notes
+        self.status = status
     }
     
     init?(doc: QueryDocumentSnapshot) {
@@ -79,13 +110,16 @@ struct OrderModel: Identifiable {
         guard let id = data["number"] as? String,
               let date = data["date"] as? Timestamp,
               let userID = data["user_id"] as? String,
-              let notes = data["notes"] as? String
+              let notes = data["notes"] as? String,
+              let statusRawValue = data["status"] as? String,
+              let status = OrderStatus.init(rawValue: statusRawValue)
         else { return nil }
         
         self.id = id
         self.date = date.dateValue()
         self.user = UserModel(email: userID)
         self.notes = notes
+        self.status = status
     }
     
     var data: [String:Any] {
@@ -94,6 +128,7 @@ struct OrderModel: Identifiable {
         data["date"] = Timestamp(date: date)
         data["user_id"] = user.email
         data["notes"] = notes
+        data["status"] = status.rawValue
         return data
     }
     

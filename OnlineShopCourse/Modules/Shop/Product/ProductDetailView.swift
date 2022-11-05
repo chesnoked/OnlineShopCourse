@@ -86,14 +86,14 @@ extension ProductDetailView {
     }
     // product brand
     private var productBrand: some View {
-        Text("BRAND: \(product.brand.rawValue)")
+        Text("BRAND: \(product.brand?.rawValue ?? "")")
             .font(.caption)
             .bold()
             .foregroundColor(Color.palette.child)
     }
     // product name
     private var productName: some View {
-        Text(product.name)
+        Text(product.name ?? "")
             .font(.headline)
             .foregroundColor(Color.palette.child)
     }
@@ -115,7 +115,7 @@ extension ProductDetailView {
     }
     // product description
     private var productDescription: some View {
-        Text(product.description)
+        Text(product.description ?? "")
             .font(.subheadline)
             .foregroundColor(Color.palette.child)
     }

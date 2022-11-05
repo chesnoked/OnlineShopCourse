@@ -27,15 +27,15 @@ enum Brands: String, CaseIterable {
 struct ProductModel: Identifiable {
     
     let id: String
-    let category: Categories
-    let brand: Brands
-    let name: String
-    let description: String
+    let category: Categories?
+    let brand: Brands?
+    let name: String?
+    let description: String?
     let cost: Double
     var images: [UIImage]
     let mainImage: UIImage?
     
-    init(article: String, category: Categories, brand: Brands, name: String, description: String, cost: Double, images: [UIImage] = [], mainImage: UIImage? = nil) {
+    init(article: String, category: Categories? = nil, brand: Brands? = nil, name: String? = nil, description: String? = nil, cost: Double, images: [UIImage] = [], mainImage: UIImage? = nil) {
         self.id = article
         self.category = category
         self.brand = brand
@@ -53,10 +53,10 @@ struct ProductModel: Identifiable {
     var data: [String:Any] {
         var data: [String:Any] = [:]
         data["article"] = id
-        data["category"] = category.rawValue
-        data["brand"] = brand.rawValue
-        data["name"] = name
-        data["description"] = description
+        data["category"] = category?.rawValue ?? ""
+        data["brand"] = brand?.rawValue ?? ""
+        data["name"] = name ?? ""
+        data["description"] = description ?? ""
         data["cost"] = cost
         return data
     }
