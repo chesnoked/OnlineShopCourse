@@ -46,19 +46,21 @@ extension ShopView {
         }
     }
     // admin bar
-    private var adminBar: some View {
-        DragButton(trigger: $trigger)
-            .gesture(DragGesture()
-                .onChanged({ _ in
-                    trigger = true
-                })
-                    .onEnded({ dragValue in
-                        trigger = false
-                        if dragValue.translation.height > 55 {
-                            showUploadNewProductView.toggle()
-                        }
+    @ViewBuilder private var adminBar: some View {
+        if UserDataService.shared.isAdmin {
+            DragButton(trigger: $trigger)
+                .gesture(DragGesture()
+                    .onChanged({ _ in
+                        trigger = true
                     })
-            )
+                        .onEnded({ dragValue in
+                            trigger = false
+                            if dragValue.translation.height > 55 {
+                                showUploadNewProductView.toggle()
+                            }
+                        })
+                )
+        }
     }
     // products
     @ViewBuilder private var products: some View {

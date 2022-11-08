@@ -25,6 +25,13 @@ class UserDataService {
         return UserModel(email: user.email!)
     }
     
+    var isAdmin: Bool {
+        guard let user = auth.currentUser,
+              user.uid == "aaSFGFNl6nSegj0P8gQ0dxjiNks2"
+        else { return false }
+        return true
+    }
+    
     // MARK: upload user data to Firebase Firestore
     func uploadUserData(user: UserModel, completion: @escaping (Result<UserModel, Error>) -> Void) {
         users.document(user.email).setData(user.data) { error in

@@ -30,7 +30,11 @@ class OrderDataService {
             var orders: [OrderModel] = []
             for document in querySnap.documents {
                 if let order = OrderModel(doc: document) {
-                    orders.append(order)
+                    if order.user.email == user.email {
+                        orders.append(order)
+                    } else if UserDataService.shared.isAdmin {
+                        orders.append(order)
+                    }
                 }
             }
             completion(.success(orders))

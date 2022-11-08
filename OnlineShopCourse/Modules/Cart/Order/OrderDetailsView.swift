@@ -37,6 +37,8 @@ struct OrderDetailsView: View {
                 orderNotes
                 checkout
                     .padding(.top)
+                statusAnimation
+                    .padding(.top)
             }
             .frame(width: UIScreen.main.bounds.width * 0.66)
             .padding(.top, 30)
@@ -183,6 +185,18 @@ extension OrderDetailsView {
                     .foregroundColor(Color.palette.parent)
             })
         }
+    }
+    // status animation
+    private var statusAnimation: some View {
+        Group {
+            if cartVM.progressViewIsLoading {
+                ProgressView()
+                    .tint(Color.palette.parent)
+            } else if cartVM.showStatusAnimation {
+                StatusAnimation(status: cartVM.uploadOrderStatus)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .center)
     }
     // drag button
     private var dragButton: some View {

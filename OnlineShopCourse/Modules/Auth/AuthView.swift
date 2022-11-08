@@ -107,15 +107,17 @@ extension AuthView {
         }
     }
     // auth button
-    private var authButton: some View {
-        Button(action: {
-            authVM.authUser()
-        }, label: {
-            Text(authVM.authMethod.rawValue)
-                .font(.caption)
-                .bold()
-                .foregroundColor(Color.palette.child)
-                .scaleEffect(1.2)
-        })
+    @ViewBuilder private var authButton: some View {
+        if authVM.authFieldsValidity {
+            Button(action: {
+                authVM.authUser()
+            }, label: {
+                Text(authVM.authMethod.rawValue)
+                    .font(.caption)
+                    .bold()
+                    .foregroundColor(Color.palette.child)
+                    .scaleEffect(1.2)
+            })
+        }
     }
 }

@@ -6,8 +6,13 @@
 //
 
 import Foundation
+import Combine
 
 class CartViewModel: ObservableObject {
+    
+    init() {
+        getOrders()
+    }
     
     private let userDataService = UserDataService.shared
     private let orderDataService = OrderDataService.shared
@@ -16,8 +21,39 @@ class CartViewModel: ObservableObject {
     @Published var orderDetails: OrderDetails = OrderDetails()
     @Published var positions: [PositionModel] = []
     
-    init() {
-        getOrders()
+    private var subscription: AnyCancellable?
+    @Published var uploadOrderStatus: ImageStatus = ImageStatus.none
+    @Published var progressViewIsLoading: Bool = false
+    @Published var showStatusAnimation: Bool = false
+    
+    // MARK: Loader
+    private func loader(deadLine: Double) {
+        progressViewLoader(deadLine: deadLine)
+        subscription = $uploadOrderStatus
+            .sink { status in
+                if status == .ok {
+                    self.statusAnimationLoader()
+                }
+            }
+    }
+    
+    // MARK: progress view loader
+    private func progressViewLoader(deadLine: Double) {
+        progressViewIsLoading = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + deadLine) {
+            if self.progressViewIsLoading { self.statusAnimationLoader() }
+        }
+    }
+    
+    // MARK: status animation loader
+    private func statusAnimationLoader() {
+        subscription?.cancel()
+        progressViewIsLoading = false
+        showStatusAnimation = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
+            self.showStatusAnimation = false
+            self.uploadOrderStatus = ImageStatus.none
+        }
     }
     
     // MARK: order total cost
@@ -80,6 +116,7 @@ class CartViewModel: ObservableObject {
     
     // MARK: upload order
     func uploadOrder() {
+        loader(deadLine: 15.0)
         guard let user = getUser() else { return }
         userDataService.uploadUserData(user: user) { result in
             switch result {
@@ -88,6 +125,7 @@ class CartViewModel: ObservableObject {
                 self.orderDataService.uploadOrder(order: order) { result in
                     switch result {
                     case .success(let order):
+                        self.uploadOrderStatus = ImageStatus.ok
                         print("Successfully uploaded order: \(order.id)")
                     case .failure(_):
                         break

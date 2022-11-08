@@ -6,8 +6,13 @@
 //
 
 import Foundation
+import Combine
 
 class ShopViewModel: ObservableObject {
+    
+    init() {
+        getProducts()
+    }
     
     private let productDataService = ProductDataService.shared
     private let productImageService = ProductImageService.shared
@@ -15,12 +20,59 @@ class ShopViewModel: ObservableObject {
     @Published var newProduct: NewProduct = NewProduct()
     @Published var products: [ProductModel] = []
     
+    private var subscription: AnyCancellable?
     @Published var uploadProductStatus: ImageStatus = ImageStatus.none
     @Published var progressViewIsLoading: Bool = false
     @Published var showStatusAnimation: Bool = false
     
-    init() {
-        getProducts()
+    // MARK: Loader
+    private func loader(deadLine: Double) {
+        progressViewLoader(deadLine: deadLine)
+        subscription = $uploadProductStatus
+            .sink { status in
+                if status == .ok {
+                    self.statusAnimationLoader()
+                }
+            }
+    }
+    
+    // MARK: progress view loader
+    private func progressViewLoader(deadLine: Double) {
+        progressViewIsLoading = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + deadLine) {
+            if self.progressViewIsLoading { self.statusAnimationLoader() }
+        }
+    }
+    
+    // MARK: status animation loader
+    private func statusAnimationLoader() {
+        subscription?.cancel()
+        progressViewIsLoading = false
+        showStatusAnimation = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
+            self.showStatusAnimation = false
+            self.uploadProductStatus = ImageStatus.none
+        }
+    }
+    
+    // MARK: upload product to Firebase
+    func uploadProduct(product: ProductModel) {
+        loader(deadLine: 30.0)
+        productDataService.uploadProductData(product: product) { result in
+            switch result {
+            case .success(let product):
+                self.productImageService.uploadAllProductImages(product: product) { result in
+                    switch result {
+                    case .success(_):
+                        self.uploadProductStatus = ImageStatus.ok
+                    case .failure(_):
+                        self.deleteProduct(product: product)
+                    }
+                }
+            case .failure(_):
+                break
+            }
+        }
     }
     
     // MARK: get products from Firebase
@@ -77,45 +129,6 @@ class ShopViewModel: ObservableObject {
                         case .failure(_):
                             break
                         }
-                    }
-                }
-            case .failure(_):
-                break
-            }
-        }
-    }
-    
-    // MARK: progress view loader
-    private func progressViewLoader(deadLine: Double) {
-        progressViewIsLoading = true
-        DispatchQueue.main.asyncAfter(deadline: .now() + deadLine) {
-            if self.progressViewIsLoading { self.statusAnimationLoader() }
-        }
-    }
-    
-    // MARK: status animation loader
-    private func statusAnimationLoader() {
-        progressViewIsLoading = false
-        showStatusAnimation = true
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
-            self.showStatusAnimation = false
-            self.uploadProductStatus = ImageStatus.none
-        }
-    }
-    
-    // MARK: upload product to Firebase
-    func uploadProduct(product: ProductModel) {
-        progressViewLoader(deadLine: 60.0)
-        productDataService.uploadProductData(product: product) { result in
-            switch result {
-            case .success(let product):
-                self.productImageService.uploadAllProductImages(product: product) { result in
-                    switch result {
-                    case .success(_):
-                        self.uploadProductStatus = ImageStatus.ok
-                        self.statusAnimationLoader()
-                    case .failure(_):
-                        self.deleteProduct(product: product)
                     }
                 }
             case .failure(_):
