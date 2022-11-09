@@ -16,9 +16,11 @@ class ShopViewModel: ObservableObject {
     
     private let productDataService = ProductDataService.shared
     private let productImageService = ProductImageService.shared
+    private let userDataService = UserDataService.shared
     
     @Published var newProduct: NewProduct = NewProduct()
     @Published var products: [ProductModel] = []
+    private var favoriteList: [String] = []
     
     private var subscription: AnyCancellable?
     @Published var uploadProductStatus: ImageStatus = ImageStatus.none
@@ -77,11 +79,19 @@ class ShopViewModel: ObservableObject {
     
     // MARK: get products from Firebase
     func getProducts() {
-        productDataService.downloadProductsID { result in
+        userDataService.downloadFavoriteList { result in
             switch result {
-            case .success(let productsID):
-                for productID in productsID {
-                    self.getProduct(productID: productID)
+            case .success(let list):
+                self.favoriteList = list
+                self.productDataService.downloadProductsID { result in
+                    switch result {
+                    case .success(let productsID):
+                        for productID in productsID {
+                            self.getProduct(productID: productID)
+                        }
+                    case .failure(_):
+                        break
+                    }
                 }
             case .failure(_):
                 break
@@ -97,7 +107,8 @@ class ShopViewModel: ObservableObject {
                 self.productImageService.downloadProductMainImage(product: product) { result in
                     switch result {
                     case .success(let image):
-                        let product = ProductModel(product: product, productMainImage: image)
+                        var product = ProductModel(product: product, productMainImage: image)
+                        if self.favoriteList.contains(product.id) { product.isFavorites = true }
                         self.products.append(product)
                     case .failure(_):
                         break
@@ -114,6 +125,18 @@ class ShopViewModel: ObservableObject {
         guard let index = products.firstIndex(where: { oneProduct in product.id == oneProduct.id })
         else { return 0 }
         return index
+    }
+    
+    // MARK: add product to favorites
+    func addToFavorites(product: ProductModel) {
+        userDataService.addProductToFavorites(product: product) { result in
+            switch result {
+            case .success(let product):
+                self.products[self.getProductIndex(product: product)].isFavorites.toggle()
+            case .failure(_):
+                break
+            }
+        }
     }
     
     // MARK: get product images

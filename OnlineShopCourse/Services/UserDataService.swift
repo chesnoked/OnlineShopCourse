@@ -32,6 +32,49 @@ class UserDataService {
         return true
     }
     
+    // MARK: download products favorite list from user personal account on Firebase Firestore
+    func downloadFavoriteList(completion: @escaping (Result<[String], Error>) -> Void) {
+        guard let user = currentUser else { return }
+        let favoriteList = users.document(user.email).collection("favorites")
+        favoriteList.getDocuments { querySnap, error in
+            guard let querySnap = querySnap else {
+                if let error = error {
+                    completion(.failure(error))
+                }
+                return
+            }
+            var list: [String] = []
+            for document in querySnap.documents {
+                list.append(document.documentID)
+            }
+            completion(.success(list))
+        }
+    }
+    
+    // MARK: add favorite product to user personal account on Firebase Firestore
+    func addProductToFavorites(product: ProductModel, completion: @escaping (Result<ProductModel, Error>) -> Void) {
+        guard let user = currentUser else { return }
+        let favoriteList = users.document(user.email).collection("favorites")
+        if !product.isFavorites {
+            favoriteList.document(product.id).setData([:]) { error in
+                if let error = error {
+                    completion(.failure(error))
+                } else {
+                    completion(.success(product))
+                }
+            }
+        }
+        else {
+            favoriteList.document(product.id).delete { error in
+                if let error = error {
+                    completion(.failure(error))
+                } else {
+                    completion(.success(product))
+                }
+            }
+        }
+    }
+    
     // MARK: upload user data to Firebase Firestore
     func uploadUserData(user: UserModel, completion: @escaping (Result<UserModel, Error>) -> Void) {
         users.document(user.email).setData(user.data) { error in

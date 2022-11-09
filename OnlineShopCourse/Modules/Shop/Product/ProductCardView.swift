@@ -14,6 +14,7 @@
 import SwiftUI
 
 struct ProductCardView: View {
+    @EnvironmentObject private var shopVM: ShopViewModel
     let product: ProductModel
     var body: some View {
         VStack(alignment: .leading, spacing: 5) {
@@ -34,11 +35,28 @@ extension ProductCardView {
     // product image
     @ViewBuilder private var productImage: some View {
         if let image = product.mainImage {
-            Image(uiImage: image)
-                .resizable()
-                .clipShape(RoundedRectangle(cornerRadius: 5))
-                .frame(width: Settings.shared.productCardSize, height: Settings.shared.productCardSize)
+            ZStack(alignment: .bottomTrailing) {
+                // product image
+                Image(uiImage: image)
+                    .resizable()
+                    .clipShape(RoundedRectangle(cornerRadius: 5))
+                // add to favorites
+                addToFavorites
+                    .padding(EdgeInsets(top: 0, leading: 0, bottom: 10, trailing: 10))
+            }
+            .frame(width: Settings.shared.productCardSize, height: Settings.shared.productCardSize)
         }
+    }
+    // add to favorites
+    private var addToFavorites: some View {
+        Button(action: {
+            withAnimation(.linear(duration: 0.66)) {
+                shopVM.addToFavorites(product: product)
+            }
+        }, label: {
+            Image(systemName: "heart.fill")
+                .foregroundColor(product.isFavorites ? Color.palette.child : Color.white)
+        })
     }
     // product brand
     private var productBrand: some View {

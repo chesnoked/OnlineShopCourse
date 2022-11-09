@@ -106,11 +106,14 @@ extension ProductDetailView {
     }
     // cart module
     private var cartModule: some View {
-        HStack(spacing: 15) {
+        HStack(spacing: 10) {
+            // add to favorites
+            addToFavorites
             // add to cart
             addToCart
             // product amount
             productAmount
+                .padding(.leading, 5)
         }
     }
     // product description
@@ -123,6 +126,17 @@ extension ProductDetailView {
 }
 
 extension ProductDetailView {
+    // add to favorites
+    private var addToFavorites: some View {
+        Button(action: {
+            withAnimation(.linear(duration: 0.66)) {
+                shopVM.addToFavorites(product: product)
+            }
+        }, label: {
+            Image(systemName: "heart.circle")
+                .foregroundColor(product.isFavorites ? Color.palette.child : Color.white)
+        })
+    }
     // add to cart
     private var addToCart: some View {
         Button(action: {
