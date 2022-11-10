@@ -18,6 +18,17 @@ class OrderDataService {
         return database.collection("orders")
     }
     
+    // MARK: change order status
+    func changeOrderStatus(order: OrderModel) {
+        orders.document(order.id).getDocument { docSnap, _ in
+            guard let docSnap = docSnap,
+                  var data = docSnap.data()
+            else { return }
+            data.updateValue(order.status.rawValue, forKey: "status")
+            self.orders.document(order.id).setData(data)
+        }
+    }
+    
     // MARK: download all orders from Firebase Firestore
     func downloadOrders(user: UserModel, completion: @escaping (Result<[OrderModel], Error>) -> Void) {
         orders.getDocuments { querySnap, error in

@@ -23,7 +23,7 @@ struct OrderPositionView: View {
                 total
             }
             status
-                .padding(.vertical, 5)
+                .padding(.vertical, 10)
             VStack(alignment: .leading, spacing: 3) {
                 userID
                 date
@@ -53,12 +53,27 @@ extension OrderPositionView {
     }
     // order status
     private var status: some View {
-        Text(order.status.rawValue)
-            .font(.caption2)
-            .bold()
-            .foregroundColor(Color.palette.child)
-            .padding(5)
-            .background(Color.palette.parent)
+        Group {
+            if UserDataService.shared.isAdmin {
+                Picker("", selection: $order.status) {
+                    ForEach(OrderStatus.allCases, id: \.self) { status in
+                        Text(status.rawValue)
+                            .tag(status.rawValue)
+                    }
+                }
+                .accentColor(Color.palette.child)
+            } else {
+                Text(order.status.rawValue)
+                    .font(.caption2)
+                    .bold()
+                    .foregroundColor(Color.palette.child)
+                    .padding(5)
+            }
+        }
+        .background(Color.palette.parent.cornerRadius(5))
+        .onChange(of: order.status) { _ in
+            OrderDataService.shared.changeOrderStatus(order: order)
+        }
     }
     // order user id
     private var userID: some View {

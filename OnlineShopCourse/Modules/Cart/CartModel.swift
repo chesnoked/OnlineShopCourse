@@ -46,7 +46,7 @@ struct PositionModel: Identifiable {
 
 // MARK: order
 
-enum OrderStatus: String {
+enum OrderStatus: String, CaseIterable {
     // 1. Новый заказ. Ожидает подтверждения.
     case new = "На подтверждении."
     // 2. Заказ подтверждён и ожидает оплаты.
@@ -85,7 +85,7 @@ struct OrderModel: Identifiable {
     let user: UserModel
     var positions: [PositionModel] = []
     let notes: String
-    let status: OrderStatus
+    var status: OrderStatus
     
     var total: Double {
         var total: Double = 0
