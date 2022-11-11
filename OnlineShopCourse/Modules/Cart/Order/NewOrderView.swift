@@ -13,10 +13,10 @@
 
 import SwiftUI
 
-struct OrderDetailsView: View {
+struct NewOrderView: View {
     @EnvironmentObject private var cartVM: CartViewModel
     @State private var trigger: Bool = false
-    @Binding var showOrderDetailsView: Bool
+    @Binding var showNewOrderView: Bool
     var body: some View {
         ZStack(alignment: .top) {
             VStack(alignment: .center, spacing: 10) {
@@ -50,7 +50,7 @@ struct OrderDetailsView: View {
     }
 }
 
-extension OrderDetailsView {
+extension NewOrderView {
     // user second name
     private var secondName: some View {
         TextField("second name", text: $cartVM.orderDetails.secondName)
@@ -158,7 +158,7 @@ extension OrderDetailsView {
     }
 }
 
-extension OrderDetailsView {
+extension NewOrderView {
     // order details
     private var orderDetails: some View {
         Text("Order details")
@@ -210,7 +210,7 @@ extension OrderDetailsView {
                         .onEnded({ dragValue in
                             trigger = false
                             if dragValue.translation.height < -55 {
-                                showOrderDetailsView.toggle()
+                                showNewOrderView.toggle()
                             }
                         })
                 )

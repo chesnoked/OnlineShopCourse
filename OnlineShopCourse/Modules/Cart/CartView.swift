@@ -18,11 +18,11 @@ struct CartView: View {
     @EnvironmentObject private var shopVM: ShopViewModel
     @EnvironmentObject private var cartVM: CartViewModel
     @State private var selectedPosition: PositionModel? = nil
-    @State private var showOrderDetailsView: Bool = false
+    @State private var showNewOrderView: Bool = false
     var body: some View {
         ZStack {
-            // order details
-            orderDetails
+            // new order
+            newOrder
                 .onAppear {
                     getUserDetails()
                 }
@@ -52,10 +52,10 @@ struct CartView: View {
 }
 
 extension CartView {
-    // order details
-    @ViewBuilder private var orderDetails: some View {
-        if showOrderDetailsView {
-            OrderDetailsView(showOrderDetailsView: $showOrderDetailsView)
+    // new order
+    @ViewBuilder private var newOrder: some View {
+        if showNewOrderView {
+            NewOrderView(showNewOrderView: $showNewOrderView)
                 .transition(.move(edge: .top))
                 .animation(.linear(duration: 0.88))
                 .zIndex(1)
@@ -77,7 +77,7 @@ extension CartView {
     @ViewBuilder private var uploadOrder: some View {
         if !cartVM.positions.isEmpty {
             Button(action: {
-                showOrderDetailsView.toggle()
+                showNewOrderView.toggle()
             }, label: {
                 CloudAnimation()
             })

@@ -82,7 +82,7 @@ struct OrderModel: Identifiable {
     
     let id: String
     let date: Date
-    let user: UserModel
+    var user: UserModel
     var positions: [PositionModel] = []
     let notes: String
     var status: OrderStatus

@@ -14,7 +14,8 @@ struct ProfileView_Previews: PreviewProvider {
 import SwiftUI
 
 struct ProfileView: View {
-    @EnvironmentObject private var cartVM: CartViewModel
+    @EnvironmentObject private var profileVM: ProfileViewModel
+    @State private var selectedOrder: OrderModel? = nil
     @State private var myColorTheme: MyColorTheme = MyColorTheme()
     @State private var parentColor: Color = Color.palette.parent
     @State private var childColor: Color = Color.palette.child
@@ -25,7 +26,7 @@ struct ProfileView: View {
                 colorThemeChanger
                 // orders
                 orders
-                    .padding(.vertical)
+                    .padding([.horizontal, .vertical])
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -58,13 +59,19 @@ extension ProfileView {
     private var orders: some View {
         ScrollView(.vertical, showsIndicators: true) {
             VStack(spacing: 10) {
-                ForEach(cartVM.orders) { order in
-                    OrderPositionView(order: $cartVM.orders[cartVM.getOrderIndex(order: order)])
+                ForEach(profileVM.orders) { order in
+                    OrderPositionView(order: $profileVM.orders[profileVM.getOrderIndex(order: order)])
+                        .onTapGesture {
+                            selectedOrder = order
+                        }
                 }
             }
         }
         .onAppear {
-            cartVM.getOrders()
+            profileVM.getOrders()
+        }
+        .sheet(item: $selectedOrder) { order in
+            OrderDetailsView(order: $profileVM.orders[profileVM.getOrderIndex(order: order)])
         }
     }
 }

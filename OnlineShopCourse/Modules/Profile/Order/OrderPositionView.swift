@@ -15,25 +15,55 @@ import SwiftUI
 
 struct OrderPositionView: View {
     @Binding var order: OrderModel
+    @State private var showUserDetailsView: Bool = false
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            HStack(spacing: 0) {
-                number
-                Spacer()
-                total
-            }
-            status
-                .padding(.vertical, 10)
-            VStack(alignment: .leading, spacing: 3) {
-                userID
-                date
-                notes
-                    .padding(.top, 5)
+        ZStack {
+            // user details
+            userDetails
+            VStack(alignment: .leading, spacing: 0) {
+                HStack(spacing: 0) {
+                    number
+                    Spacer()
+                    total
+                }
+                status
+                    .padding(.vertical, 10)
+                VStack(alignment: .leading, spacing: 3) {
+                    userID
+                    date
+                    notes
+                        .padding(.top, 5)
+                }
             }
         }
         .padding()
-        .frame(width: UIScreen.main.bounds.width * 0.66)
+        .frame(maxWidth: .infinity)
         .background(Color.palette.child.cornerRadius(5))
+    }
+}
+
+extension OrderPositionView {
+    // user details
+    @ViewBuilder private var userDetails: some View {
+        if showUserDetailsView {
+            UserDetailsView(order: $order, showUserDetailsView: $showUserDetailsView)
+                .transition(.opacity.animation(.linear(duration: 0.88)))
+                .zIndex(1)
+                .onAppear {
+                    getUserDetails()
+                }
+        }
+    }
+    // get user details
+    private func getUserDetails() {
+        UserDataService.shared.downloadUserData(user: UserModel(email: order.user.email)) { result in
+            switch result {
+            case .success(let user):
+                order.user = user
+            case .failure(_):
+                break
+            }
+        }
     }
 }
 
@@ -76,11 +106,22 @@ extension OrderPositionView {
         }
     }
     // order user id
-    private var userID: some View {
-        Text(order.user.email)
-            .font(.caption2)
-            .bold()
-            .foregroundColor(Color.palette.parent)
+    @ViewBuilder private var userID: some View {
+        if UserDataService.shared.isAdmin {
+            Button(action: {
+                showUserDetailsView.toggle()
+            }, label: {
+                Text(order.user.email)
+                    .font(.caption2)
+                    .bold()
+                    .foregroundColor(Color.palette.parent)
+            })
+        } else {
+            Text(order.user.email)
+                .font(.caption2)
+                .bold()
+                .foregroundColor(Color.palette.parent)
+        }
     }
     // order date
     private var date: some View {
