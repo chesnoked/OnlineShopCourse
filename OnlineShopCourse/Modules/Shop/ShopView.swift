@@ -28,6 +28,10 @@ struct ShopView: View {
                 // products
                 products
                     .padding(.vertical)
+                // search bar
+                searchBar
+                    .padding(.vertical)
+                    .padding(.bottom)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -71,16 +75,47 @@ extension ShopView {
                       alignment: .center,
                       spacing: 15,
                       pinnedViews: []) {
-                ForEach(shopVM.products) { product in
+                ForEach(shopVM.currentProducts) { product in
                     ProductCardView(product: product)
                         .onTapGesture {
                             selectedProduct = product
                         }
                 }
                 .sheet(item: $selectedProduct) { product in
-                    ProductDetailView(product: $shopVM.products[shopVM.getProductIndex(product: product)])
+                    ProductDetailView(product: $shopVM.originalProducts[shopVM.getProductIndex(product: product)])
                 }
             }
         }
+    }
+}
+
+extension ShopView {
+    // search bar
+    private var searchBar: some View {
+        TextField("", text: $shopVM.searchText)
+            .font(.subheadline)
+            .foregroundColor(Color.palette.child)
+            .padding(.horizontal)
+            .frame(width: UIScreen.main.bounds.width * 0.55, height: 30)
+            .background(
+                RoundedRectangle(cornerRadius: 30.0)
+                    .stroke(
+                        Color.palette.child
+                        ,
+                        lineWidth: 1.0
+                    )
+            )
+            .overlay(alignment: .trailing) {
+                Button(action: {
+                    shopVM.searchText = ""
+                }, label: {
+                    Image(systemName: shopVM.searchText.isEmpty ? "magnifyingglass" : "xmark")
+                        .font(.caption)
+                        .foregroundColor(Color.palette.child.opacity(0.44))
+                        .animation(.linear(duration: 0.33))
+                        .padding(.trailing, 5)
+                })
+                .disabled(shopVM.searchText.isEmpty)
+            }
     }
 }

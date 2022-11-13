@@ -74,7 +74,7 @@ extension ProductDetailView {
             shopVM.getProductImages(product: product)
         }
         .onDisappear {
-            shopVM.products[shopVM.getProductIndex(product: product)].images.removeAll()
+            shopVM.originalProducts[shopVM.getProductIndex(product: product)].images.removeAll()
         }
     }
     // product article

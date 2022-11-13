@@ -12,6 +12,7 @@ class ShopViewModel: ObservableObject {
     
     init() {
         getProducts()
+        searchProduts()
     }
     
     private let productDataService = ProductDataService.shared
@@ -19,13 +20,65 @@ class ShopViewModel: ObservableObject {
     private let userDataService = UserDataService.shared
     
     @Published var newProduct: NewProduct = NewProduct()
-    @Published var products: [ProductModel] = []
+    @Published var originalProducts: [ProductModel] = []
     private var favoriteList: [String] = []
     
     private var subscription: AnyCancellable?
     @Published var uploadProductStatus: ImageStatus = ImageStatus.none
     @Published var progressViewIsLoading: Bool = false
     @Published var showStatusAnimation: Bool = false
+    
+    @Published var searchText: String = ""
+    @Published var currentProducts: [ProductModel] = []
+    private var cancellables = Set<AnyCancellable>()
+    
+    // MARK: search products
+    private func searchProduts() {
+        $searchText
+            .combineLatest($originalProducts)
+            .debounce(for: .seconds(0.5), scheduler: DispatchQueue.main)
+            .map(filterProducts)
+            .sink { foundProducts in
+                self.currentProducts = foundProducts
+            }
+            .store(in: &cancellables)
+    }
+    
+    // MARK: filter products
+    private func filterProducts(searchText: String, products: [ProductModel]) -> [ProductModel] {
+        guard !searchText.isEmpty else { return products }
+        var foundProducts = products
+        let keyWords = getSeparateWordsFromString(text: searchText)
+        for keyWord in keyWords {
+            foundProducts = foundProducts.filter({ product in
+                guard let name = product.name,
+                      let description = product.description
+                else { return false }
+                return name.lowercased().contains(keyWord.lowercased()) || description.lowercased().contains(keyWord.lowercased())
+            })
+        }
+        return foundProducts
+    }
+    
+    // MARK: get separate words from string
+    private func getSeparateWordsFromString(text: String) -> [String] {
+        var tempString = text
+        var keyWord: String
+        var keyWords: [String] = []
+        while !tempString.isEmpty {
+            let firstCharIndexOfString = tempString.startIndex
+            if let spaceSymbolIndexOfString = tempString.firstIndex(of: " ") {
+                keyWord = String(tempString[firstCharIndexOfString..<spaceSymbolIndexOfString])
+                tempString = String(tempString[tempString.index(after: spaceSymbolIndexOfString)...])
+                if !keyWord.isEmpty { keyWords.append(keyWord) }
+            } else {
+                keyWord = tempString
+                keyWords.append(keyWord)
+                tempString.removeAll()
+            }
+        }
+        return keyWords
+    }
     
     // MARK: Loader
     private func loader(deadLine: Double) {
@@ -109,7 +162,7 @@ class ShopViewModel: ObservableObject {
                     case .success(let image):
                         var product = ProductModel(product: product, productMainImage: image)
                         if self.favoriteList.contains(product.id) { product.isFavorites = true }
-                        self.products.append(product)
+                        self.originalProducts.append(product)
                     case .failure(_):
                         break
                     }
@@ -122,7 +175,7 @@ class ShopViewModel: ObservableObject {
     
     // MARK: get product index in products
     func getProductIndex(product: ProductModel) -> Int {
-        guard let index = products.firstIndex(where: { oneProduct in product.id == oneProduct.id })
+        guard let index = originalProducts.firstIndex(where: { oneProduct in product.id == oneProduct.id })
         else { return 0 }
         return index
     }
@@ -132,7 +185,7 @@ class ShopViewModel: ObservableObject {
         userDataService.addProductToFavorites(product: product) { result in
             switch result {
             case .success(let product):
-                self.products[self.getProductIndex(product: product)].isFavorites.toggle()
+                self.originalProducts[self.getProductIndex(product: product)].isFavorites.toggle()
             case .failure(_):
                 break
             }
@@ -148,7 +201,7 @@ class ShopViewModel: ObservableObject {
                     self.productImageService.downloadProductImage(imageLink: link) { result in
                         switch result {
                         case .success(let image):
-                            self.products[self.getProductIndex(product: product)].images.append(image)
+                            self.originalProducts[self.getProductIndex(product: product)].images.append(image)
                         case .failure(_):
                             break
                         }
@@ -175,7 +228,7 @@ class ShopViewModel: ObservableObject {
     // MARK: refresh shop
     func refreshShop() {
         resetProduct()
-        products.removeAll()
+        originalProducts.removeAll()
         getProducts()
     }
     

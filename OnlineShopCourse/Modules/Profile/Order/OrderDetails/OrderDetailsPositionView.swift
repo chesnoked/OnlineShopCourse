@@ -48,7 +48,7 @@ struct OrderDetailsPositionView: View {
     }
     // get product
     private func getProduct() -> ProductModel? {
-        return shopVM.products.first { oneProduct in
+        return shopVM.originalProducts.first { oneProduct in
             position.product.id == oneProduct.id
         }
     }

@@ -114,7 +114,7 @@ extension CartView {
                         }
                 }
                 .sheet(item: $selectedPosition) { position in
-                    ProductDetailView(product: $shopVM.products[shopVM.getProductIndex(product: position.product)], amount: position.amount, position: position)
+                    ProductDetailView(product: $shopVM.originalProducts[shopVM.getProductIndex(product: position.product)], amount: position.amount, position: position)
                 }
             }
         }
