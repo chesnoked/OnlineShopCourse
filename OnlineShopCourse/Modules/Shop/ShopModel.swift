@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import FirebaseFirestore
 
 enum Categories: String, CaseIterable {
     case category1 = "Category 1"
@@ -27,6 +28,7 @@ enum Brands: String, CaseIterable {
 struct ProductModel: Identifiable {
     
     let id: String
+    let date: Date
     var isFavorites: Bool
     let category: Categories?
     let brand: Brands?
@@ -36,8 +38,9 @@ struct ProductModel: Identifiable {
     var images: [UIImage]
     let mainImage: UIImage?
     
-    init(article: String, isFavorites: Bool = false, category: Categories? = nil, brand: Brands? = nil, name: String? = nil, description: String? = nil, cost: Double, images: [UIImage] = [], mainImage: UIImage? = nil) {
+    init(article: String, date: Date = Date(), isFavorites: Bool = false, category: Categories? = nil, brand: Brands? = nil, name: String? = nil, description: String? = nil, cost: Double, images: [UIImage] = [], mainImage: UIImage? = nil) {
         self.id = article
+        self.date = date
         self.isFavorites = isFavorites
         self.category = category
         self.brand = brand
@@ -49,12 +52,13 @@ struct ProductModel: Identifiable {
     }
     
     init(product: ProductModel, productMainImage: UIImage) {
-        self.init(article: product.id, isFavorites: product.isFavorites, category: product.category, brand: product.brand, name: product.name, description: product.description, cost: product.cost, images: product.images, mainImage: productMainImage)
+        self.init(article: product.id, date: product.date, isFavorites: product.isFavorites, category: product.category, brand: product.brand, name: product.name, description: product.description, cost: product.cost, images: product.images, mainImage: productMainImage)
     }
     
     var data: [String:Any] {
         var data: [String:Any] = [:]
         data["article"] = id
+        data["date"] = Timestamp(date: date)
         data["category"] = category?.rawValue ?? ""
         data["brand"] = brand?.rawValue ?? ""
         data["name"] = name ?? ""

@@ -12,7 +12,7 @@ class ShopViewModel: ObservableObject {
     
     init() {
         getProducts()
-        searchProduts()
+        shopBarActions()
     }
     
     private let productDataService = ProductDataService.shared
@@ -28,24 +28,70 @@ class ShopViewModel: ObservableObject {
     @Published var progressViewIsLoading: Bool = false
     @Published var showStatusAnimation: Bool = false
     
+    @Published var shopBarSelectedOption: ShopBarOptions = .byName
     @Published var searchText: String = ""
     @Published var currentProducts: [ProductModel] = []
     private var cancellables = Set<AnyCancellable>()
     
-    // MARK: search products
-    private func searchProduts() {
-        $searchText
-            .combineLatest($originalProducts)
+    // MARK: shop bar actions
+    private func shopBarActions() {
+        $shopBarSelectedOption
+            .combineLatest($searchText, $originalProducts)
             .debounce(for: .seconds(0.5), scheduler: DispatchQueue.main)
-            .map(filterProducts)
-            .sink { foundProducts in
-                self.currentProducts = foundProducts
+            .map { (option, searchText, products) -> [ProductModel] in
+                switch option {
+                case .byFavorites:
+                    return self.filterByFavorites(products: products)
+                case .byName:
+                    return self.sortedByName(products: products)
+                case .byBrand:
+                    return self.sortedByBrand(products: products)
+                case .news:
+                    return self.sortedByDate(products: products)
+                case .search:
+                    return self.searchProducts(searchText: searchText, products: products)
+                }
+            }
+            .sink { filteredProducts in
+                self.currentProducts = filteredProducts
             }
             .store(in: &cancellables)
     }
     
-    // MARK: filter products
-    private func filterProducts(searchText: String, products: [ProductModel]) -> [ProductModel] {
+    // MARK: filter by favorites
+    private func filterByFavorites(products: [ProductModel]) -> [ProductModel] {
+        return products.filter { product in product.isFavorites }
+    }
+    
+    // MARK: sorted by name
+    private func sortedByName(products: [ProductModel]) -> [ProductModel] {
+        return products.sorted { lastProduct, nextProduct in
+            guard let nameLastProduct = lastProduct.name,
+                  let nameNextProduct = nextProduct.name
+            else { return false }
+            return nameLastProduct < nameNextProduct
+        }
+    }
+    
+    // MARK: sorted by brand
+    private func sortedByBrand(products: [ProductModel]) -> [ProductModel] {
+        return products.sorted { lastProduct, nextProduct in
+            guard let brandLastProduct = lastProduct.brand?.rawValue,
+                  let brandNextProduct = nextProduct.brand?.rawValue
+            else { return false }
+            return brandLastProduct < brandNextProduct
+        }
+    }
+    
+    // MARK: sorted by date
+    private func sortedByDate(products: [ProductModel]) -> [ProductModel] {
+        return products.sorted { lastProduct, nextProduct in
+            lastProduct.date > nextProduct.date
+        }
+    }
+    
+    // MARK: search products
+    private func searchProducts(searchText: String, products: [ProductModel]) -> [ProductModel] {
         guard !searchText.isEmpty else { return products }
         var foundProducts = products
         let keyWords = getSeparateWordsFromString(text: searchText)
