@@ -5,11 +5,11 @@
 //  Created by Evgeniy Safin on 29.10.2022.
 //
 
-struct AuthView_Previews: PreviewProvider {
-    static var previews: some View {
-        AuthView()
-    }
-}
+//struct AuthView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        AuthView()
+//    }
+//}
 
 import SwiftUI
 
@@ -25,8 +25,14 @@ struct AuthView: View {
                 confirmPassword
                 authMethodPicker
                     .padding(.top, 10)
-                authButton
-                    .padding(.top, 10)
+                Group {
+                    if authVM.isLoading {
+                        statusLoading
+                    } else {
+                        authButton
+                    }
+                }
+                .padding(.top, 10)
             }
             .frame(width: UIScreen.main.bounds.width * 0.6)
             .animation(.linear(duration: 0.44).delay(0.33))
@@ -119,5 +125,10 @@ extension AuthView {
                     .scaleEffect(1.2)
             })
         }
+    }
+    // status loading
+    private var statusLoading: some View {
+        ProgressView()
+            .tint(Color.palette.child)
     }
 }

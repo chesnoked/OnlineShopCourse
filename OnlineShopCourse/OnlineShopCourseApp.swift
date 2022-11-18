@@ -20,12 +20,18 @@ struct OnlineShopCourseApp: App {
     
     var body: some Scene {
         WindowGroup {
-            OnlineShopView()
-                .environmentObject(authVM)
-                .environmentObject(shopVM)
-                .environmentObject(cartVM)
-                .environmentObject(profileVM)
-                .statusBarHidden(true)
+            Group {
+                if UserDataService.shared.currentUser == nil && authVM.user == nil {
+                    AuthView()
+                } else {
+                    OnlineShopView()
+                }
+            }
+            .environmentObject(authVM)
+            .environmentObject(shopVM)
+            .environmentObject(cartVM)
+            .environmentObject(profileVM)
+            .statusBarHidden(true)
         }
     }
 }

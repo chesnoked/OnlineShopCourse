@@ -14,6 +14,7 @@
 import SwiftUI
 
 struct ProfileView: View {
+    @EnvironmentObject private var authVM: AuthViewModel
     @EnvironmentObject private var profileVM: ProfileViewModel
     @State private var showLeftContextMenu: Bool = false
     @State private var showRightContextMenu: Bool = false
@@ -22,28 +23,29 @@ struct ProfileView: View {
     @State private var parentColor: Color = Color.palette.parent
     @State private var childColor: Color = Color.palette.child
     var body: some View {
-        ZStack {
+        
+        ZStack(alignment: showLeftContextMenu ? .topLeading : showRightContextMenu ? .topTrailing : .top) {
             VStack(spacing: 0) {
-                ZStack(alignment: showLeftContextMenu ? .topLeading : showRightContextMenu ? .topTrailing : .top) {
-                    // nav bar
-                    navBar
-                    // context menus
-                    Group {
-                        if showLeftContextMenu {
-                            leftContextMenu
-                        }
-                        if showRightContextMenu {
-                            rightContextMenu
-                        }
-                    }
-                    .transition(.opacity.animation(.linear(duration: 0.33)))
-                }
-                .padding([.horizontal, .vertical])
+                
+                // nav bar
+                navBar
+                    .padding([.horizontal, .vertical])
                 
                 // orders
                 orders
                     .padding([.horizontal, .vertical])
             }
+            // context menus
+            Group {
+                if showLeftContextMenu {
+                    leftContextMenu
+                }
+                if showRightContextMenu {
+                    rightContextMenu
+                }
+            }
+            .transition(.opacity.animation(.linear(duration: 0.33)))
+            .padding([.horizontal, .vertical])
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.palette.parent.ignoresSafeArea())
@@ -57,22 +59,25 @@ extension ProfileView {
             // left context menu
             Button(action: {
                 showRightContextMenu = false
-                showLeftContextMenu.toggle()
+                showLeftContextMenu = true
             }, label: {
                 Image(systemName: "gear")
                     .glassomorphismTextFieldStyle()
-                    .opacity(showLeftContextMenu ? 0.0 : 1.0)
             })
             Spacer()
             // right context menu
             Button(action: {
                 showLeftContextMenu = false
-                showRightContextMenu.toggle()
+                showRightContextMenu = true
             }, label: {
                 Image(systemName: "person.fill")
                     .glassomorphismTextFieldStyle()
-                    .opacity(showRightContextMenu ? 0.0 : 1.0)
             })
+        }
+        .contentShape(Rectangle())
+        .onTapGesture {
+            showLeftContextMenu = false
+            showRightContextMenu = false
         }
     }
 }
@@ -101,6 +106,8 @@ extension ProfileView {
             .padding([.horizontal, .vertical])
             .frame(width: UIScreen.main.bounds.width * 0.33)
             .glassomorphismTextFieldStyle()
+            .padding(1)
+            .background(Color.palette.parent.cornerRadius(30.0))
         }
     }
     // left context menu
@@ -142,7 +149,7 @@ extension ProfileView {
                         .foregroundColor(Color.palette.child)
                     Spacer()
                     Button(action: {
-                        // sign out
+                        authVM.signOut()
                     }, label: {
                         Image(systemName: "door.left.hand.open")
                             .font(.caption)
