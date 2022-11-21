@@ -5,34 +5,65 @@
 //  Created by Evgeniy Safin on 15.10.2022.
 //
 
-struct ShopView_Previews: PreviewProvider {
-    static var previews: some View {
-        ShopView()
-    }
-}
+//struct ShopView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ShopView()
+//    }
+//}
 
 import SwiftUI
 
 struct ShopView: View {
+    
     @EnvironmentObject private var shopVM: ShopViewModel
+    @State private var showContextMenu: Bool = true
     @State private var selectedProduct: ProductModel? = nil
     @State private var showUploadNewProductView: Bool = false
     @State private var trigger: Bool = false
+    
     var body: some View {
-        ZStack {
+        
+        ZStack(alignment: .bottom) {
+            
             // upload new product
             uploadNewProduct
+            
             VStack(spacing: 0) {
+                
                 // admin bar
                 adminBar
+                
                 // products
                 products
                     .padding(.vertical)
+                
+                
                 // shop bar
                 ShopBarView()
                     .padding(.vertical)
                     .padding(.bottom)
             }
+            
+            // context menus
+            ZStack(alignment: .bottom) {
+                if showContextMenu {
+                    if shopVM.shopBarSelectedOption == .byCategory {
+                        categoriesContextMenu
+                    }
+                    if shopVM.shopBarSelectedOption == .byBrand {
+                        brandsContextMenu
+                    }
+                }
+                // hide button
+                hideButton
+                    .opacity(shopVM.shopBarSelectedOption == .byCategory || shopVM.shopBarSelectedOption == .byBrand ? 1.0 : 0.0)
+                    .padding(.bottom)
+            }
+            .padding(.bottom)
+            .padding(.bottom)
+            .padding(.bottom)
+            .offset(y: -30)
+            
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.palette.parent.ignoresSafeArea())
@@ -86,5 +117,55 @@ extension ShopView {
                 }
             }
         }
+    }
+}
+
+extension ShopView {
+    // categories context menu
+    private var categoriesContextMenu: some View {
+        CustomContexMenu {
+            ForEach(Categories.allCases, id: \.self) { category in
+                ContextMenuItem {
+                    Text(category.rawValue)
+                        .font(.caption)
+                        .bold(shopVM.selectedCategory == category)
+                        .scaleEffect(shopVM.selectedCategory == category ? 1.2 : 1.0)
+                        .foregroundColor(Color.palette.child)
+                }
+                .onTapGesture {
+                    if shopVM.selectedCategory == category { shopVM.selectedCategory = nil }
+                    else { shopVM.selectedCategory = category }
+                }
+            }
+        }
+    }
+    // brands context menu
+    private var brandsContextMenu: some View {
+        CustomContexMenu {
+            ForEach(Brands.allCases, id: \.self) { brand in
+                ContextMenuItem {
+                    Text(brand.rawValue)
+                        .font(.caption)
+                        .bold(shopVM.selectedBrand == brand)
+                        .scaleEffect(shopVM.selectedBrand == brand ? 1.2 : 1.0)
+                        .foregroundColor(Color.palette.child)
+                }
+                .onTapGesture {
+                    if shopVM.selectedBrand == brand { shopVM.selectedBrand = nil }
+                    else { shopVM.selectedBrand = brand }
+                }
+            }
+        }
+    }
+    // hide button
+    private var hideButton: some View {
+        Button(action: {
+            showContextMenu.toggle()
+        }, label: {
+            Image(systemName: showContextMenu ? "chevron.compact.down" : "chevron.compact.up")
+                .font(.caption2)
+                .bold()
+                .foregroundColor(Color.palette.child)
+        })
     }
 }

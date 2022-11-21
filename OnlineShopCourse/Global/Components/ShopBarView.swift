@@ -16,6 +16,7 @@ import SwiftUI
 enum ShopBarOptions: String, CaseIterable {
     case byFavorites = "star.fill"
     case byName = "textformat.size"
+    case byCategory = "list.bullet"
     case byBrand = "bold"
     case news = "clock.arrow.2.circlepath"
     case search = "magnifyingglass"

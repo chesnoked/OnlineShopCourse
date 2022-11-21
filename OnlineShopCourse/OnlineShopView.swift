@@ -15,7 +15,7 @@ import SwiftUI
 
 enum TabItems: String, CaseIterable {
     case home = "house.fill"
-    case shop = "list.bullet"
+    case shop = "shippingbox.fill"
     case cart = "cart.fill"
     case profile = "person.crop.circle.fill"
 }

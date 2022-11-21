@@ -33,19 +33,64 @@ class ShopViewModel: ObservableObject {
     @Published var currentProducts: [ProductModel] = []
     private var cancellables = Set<AnyCancellable>()
     
+    private var categoriesSubscription: AnyCancellable?
+    @Published var selectedCategory: Categories? = nil
+    
+    private var brandsSubscription: AnyCancellable?
+    @Published var selectedBrand: Brands? = nil
+    
+    // MARK: filter by category
+    private func filterByCategory() {
+        categoriesSubscription = $selectedCategory
+            .combineLatest($originalProducts)
+            .map({ (category, products) -> [ProductModel] in
+                guard let selectedCategory = category else { return self.sortedByCategories(products: products) }
+                return products.filter { product in
+                    guard let productCategory = product.category else { return false }
+                    return productCategory == selectedCategory
+                }
+            })
+            .sink(receiveValue: { filteredProducts in
+                self.currentProducts = filteredProducts
+            })
+    }
+    
+    // MARK: filter by brand
+    private func filterByBrand() {
+        brandsSubscription = $selectedBrand
+            .combineLatest($originalProducts)
+            .debounce(for: .seconds(0.5), scheduler: DispatchQueue.main)
+            .map { (brand, products) -> [ProductModel] in
+                guard let selectedBrand = brand else { return self.sortedByBrands(products: products) }
+                return products.filter { product in
+                    guard let productBrand = product.brand else { return false }
+                    return productBrand == selectedBrand
+                }
+            }
+            .sink { filteredProducts in
+                self.currentProducts = filteredProducts
+            }
+    }
+    
     // MARK: shop bar actions
     private func shopBarActions() {
         $shopBarSelectedOption
             .combineLatest($searchText, $originalProducts)
             .debounce(for: .seconds(0.5), scheduler: DispatchQueue.main)
             .map { (option, searchText, products) -> [ProductModel] in
+                if option != .byCategory { self.categoriesSubscription?.cancel() }
+                if option != .byBrand { self.brandsSubscription?.cancel() }
                 switch option {
                 case .byFavorites:
                     return self.filterByFavorites(products: products)
                 case .byName:
                     return self.sortedByName(products: products)
+                case .byCategory:
+                    self.filterByCategory()
+                    return self.currentProducts
                 case .byBrand:
-                    return self.sortedByBrand(products: products)
+                    self.filterByBrand()
+                    return self.currentProducts
                 case .news:
                     return self.sortedByDate(products: products)
                 case .search:
@@ -73,13 +118,23 @@ class ShopViewModel: ObservableObject {
         }
     }
     
-    // MARK: sorted by brand
-    private func sortedByBrand(products: [ProductModel]) -> [ProductModel] {
+    // MARK: sorted by brands
+    private func sortedByBrands(products: [ProductModel]) -> [ProductModel] {
         return products.sorted { lastProduct, nextProduct in
             guard let brandLastProduct = lastProduct.brand?.rawValue,
                   let brandNextProduct = nextProduct.brand?.rawValue
             else { return false }
             return brandLastProduct < brandNextProduct
+        }
+    }
+    
+    // MARK: sorted by categories
+    private func sortedByCategories(products: [ProductModel]) -> [ProductModel] {
+        return products.sorted { lastProduct, nextProduct in
+            guard let categoryLastProduct = lastProduct.category?.rawValue,
+                  let categoryNextProduct = nextProduct.category?.rawValue
+            else { return false }
+            return categoryLastProduct < categoryNextProduct
         }
     }
     
