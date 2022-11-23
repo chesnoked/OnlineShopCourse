@@ -18,7 +18,7 @@ struct AuthView: View {
     var body: some View {
         ZStack {
             VStack(spacing: 10) {
-                logo
+                AppLogoView()
                     .padding(.bottom, 15)
                 email
                 password
@@ -43,34 +43,6 @@ struct AuthView: View {
 }
 
 extension AuthView {
-    // logo
-    private var logo: some View {
-        Image("logo")
-            .resizable()
-            .aspectRatio(contentMode: .fill)
-            .clipShape(Circle())
-            .frame(width: 88, height: 88)
-            .overlay {
-                Circle()
-                    .fill(Color.palette.child.opacity(0.15))
-                    .blur(radius: 5)
-            }
-            .overlay {
-                Circle()
-                    .stroke(
-                        LinearGradient(gradient: .init(colors: [
-                            Color.palette.child,
-                            .clear,
-                            Color.palette.child
-                        ]),
-                                       startPoint: .topLeading,
-                                       endPoint: .bottomTrailing)
-                        ,
-                        lineWidth: 5.0
-                    )
-            }
-            .shadow(color: Color.palette.child, radius: 5, x: 0, y: 0)
-    }
     // user email
     private var email: some View {
         TextField("email", text: $authVM.authFields.email)

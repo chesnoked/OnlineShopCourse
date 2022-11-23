@@ -38,7 +38,7 @@ class AuthViewModel: ObservableObject {
     // MARK: get user when app at start
     private func getUser() {
         guard let user = userDataService.currentUser else {
-            authFields.email = currentUser ?? ""
+            if let currentUser = currentUser, currentUser != "new_user" { authFields.email = currentUser }
             return
         }
         userDataService.downloadUserData(user: user) { result in
@@ -104,6 +104,12 @@ class AuthViewModel: ObservableObject {
     func signOut() {
         userDataService.signOut()
         user = nil
+    }
+    
+    // MARK: set new user
+    func setNewUser() {
+        signOut()
+        currentUser = "new_user"
     }
 
 }

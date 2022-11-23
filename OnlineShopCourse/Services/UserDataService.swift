@@ -27,7 +27,7 @@ class UserDataService {
     
     var isAdmin: Bool {
         guard let user = auth.currentUser,
-              user.uid == "aaSFGFNl6nSegj0P8gQ0dxjiNks2"
+              user.uid == "G2HHiI99oAQjQzrBsKGqAaq9fXo1"
         else { return false }
         return true
     }

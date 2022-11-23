@@ -3,21 +3,21 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>662180803189-06tn8it3f20bhnnq7u4sdh12bjov9nai.apps.googleusercontent.com</string>
+	<string>573810320430-vsbv13srvdik15gdtvvpqod5o82d8tg0.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.662180803189-06tn8it3f20bhnnq7u4sdh12bjov9nai</string>
+	<string>com.googleusercontent.apps.573810320430-vsbv13srvdik15gdtvvpqod5o82d8tg0</string>
 	<key>API_KEY</key>
-	<string>AIzaSyDJdxYolFq0jWK36c7jChEELE5z2_3lO_I</string>
+	<string>AIzaSyB2eiRREyHA73akSb0ziMZkN_pwanna4h8</string>
 	<key>GCM_SENDER_ID</key>
-	<string>662180803189</string>
+	<string>573810320430</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>TerraSky.OnlineShopCourse</string>
 	<key>PROJECT_ID</key>
-	<string>onlineshopcourse-5d7b9</string>
+	<string>onlineshopcourse-969b7</string>
 	<key>STORAGE_BUCKET</key>
-	<string>onlineshopcourse-5d7b9.appspot.com</string>
+	<string>onlineshopcourse-969b7.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,6 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:662180803189:ios:3a0acccbf43ec655fdfe3c</string>
+	<string>1:573810320430:ios:933a948dcf9b55ad4cabbf</string>
 </dict>
 </plist>

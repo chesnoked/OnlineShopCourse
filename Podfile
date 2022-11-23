@@ -8,5 +8,6 @@ target 'OnlineShopCourse' do
   pod 'FirebaseAuth'
   pod 'FirebaseFirestore'
   pod 'FirebaseStorage'
+  pod 'SDWebImageSwiftUI'
 
 end

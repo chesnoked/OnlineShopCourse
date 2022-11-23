@@ -115,6 +115,24 @@ extension ProfileView {
     // right context menu
     private var rightContextMenu: some View {
         CustomContexMenu {
+            if UserDataService.shared.isAdmin {
+                ContextMenuItem {
+                    HStack(spacing: 0) {
+                        Text("set new user")
+                            .font(.caption)
+                            .foregroundColor(Color.palette.child)
+                        Spacer()
+                        Button(action: {
+                            authVM.setNewUser()
+                        }, label: {
+                            Image(systemName: "person.fill.xmark")
+                                .font(.caption)
+                                .bold()
+                                .foregroundColor(Color.palette.child)
+                        })
+                    }
+                }
+            }
             ContextMenuItem {
                 HStack(spacing: 0) {
                     Text("sign out")

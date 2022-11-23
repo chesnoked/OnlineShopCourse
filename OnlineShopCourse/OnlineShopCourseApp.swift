@@ -13,6 +13,8 @@ struct OnlineShopCourseApp: App {
     
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     
+    @AppStorage("current_user") private var currentUser: String = "new_user"
+    
     @StateObject private var authVM: AuthViewModel = AuthViewModel()
     @StateObject private var shopVM: ShopViewModel = ShopViewModel()
     @StateObject private var cartVM: CartViewModel = CartViewModel()
@@ -21,7 +23,10 @@ struct OnlineShopCourseApp: App {
     var body: some Scene {
         WindowGroup {
             Group {
-                if UserDataService.shared.currentUser == nil && authVM.user == nil {
+                if currentUser == "new_user" {
+                    WelcomeView()
+                }
+                else if UserDataService.shared.currentUser == nil && authVM.user == nil {
                     AuthView()
                 } else {
                     OnlineShopView()
