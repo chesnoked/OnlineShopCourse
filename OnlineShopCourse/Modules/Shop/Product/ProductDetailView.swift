@@ -29,6 +29,8 @@ struct ProductDetailView: View {
                 VStack(alignment: .leading, spacing: 15) {
                     // product article
                     productArticle
+                    // product category
+                    productCategory
                     // product brand
                     productBrand
                     // product name
@@ -43,8 +45,7 @@ struct ProductDetailView: View {
                 .padding([.horizontal, .vertical])
                 Spacer()
             }
-            // close button
-            closeButton
+
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.palette.parent.ignoresSafeArea())
@@ -54,22 +55,21 @@ struct ProductDetailView: View {
 extension ProductDetailView {
     // product images
     @ViewBuilder private var productImages: some View {
-        Group {
-            if let _ = product.images.first {
-                TabView {
-                    ForEach(product.images, id: \.self) { image in
-                        Image(uiImage: image)
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                    }
+        TabView {
+            if product.images.count >= 2 {
+                ForEach(product.images, id: \.self) { image in
+                    Image(uiImage: image)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
                 }
-                .tabViewStyle(PageTabViewStyle())
-            } else {
-                ProgressView()
-                    .tint(Color.palette.child)
+            } else if let image = product.mainImage {
+                Image(uiImage: image)
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
             }
         }
-        .frame(maxWidth: .infinity, maxHeight: 300, alignment: .center)
+        .tabViewStyle(PageTabViewStyle())
+        .frame(height: 300)
         .onAppear {
             shopVM.getProductImages(product: product)
         }
@@ -80,6 +80,13 @@ extension ProductDetailView {
     // product article
     private var productArticle: some View {
         Text("ID: \(product.id)")
+            .font(.caption)
+            .bold()
+            .foregroundColor(Color.palette.child)
+    }
+    // product category
+    private var productCategory: some View {
+        Text("CATEGORY: \(product.category?.rawValue ?? "")")
             .font(.caption)
             .bold()
             .foregroundColor(Color.palette.child)
@@ -118,9 +125,11 @@ extension ProductDetailView {
     }
     // product description
     private var productDescription: some View {
-        Text(product.description ?? "")
-            .font(.subheadline)
-            .foregroundColor(Color.palette.child)
+        ScrollView(.vertical, showsIndicators: true) {
+            Text(product.description ?? "")
+                .font(.subheadline)
+                .foregroundColor(Color.palette.child)
+        }
     }
     
 }
@@ -163,23 +172,6 @@ extension ProductDetailView {
     private func changeProductAmount(to newValue: UInt8) {
         guard let position = position else { return }
         cartVM.positions[cartVM.getPositionIndex(position: position)].amount = newValue
-    }
-}
-
-extension ProductDetailView {
-    // close button
-    private var closeButton: some View {
-        VStack(spacing: 0) {
-            Spacer()
-            Button(action: {
-                mode.wrappedValue.dismiss()
-            }, label: {
-                Image(systemName: "chevron.compact.down")
-                    .foregroundColor(Color.palette.child)
-                    .bold()
-            })
-        }
-        .padding(.bottom)
     }
 }
 

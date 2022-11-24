@@ -125,8 +125,4 @@ class CartViewModel: ObservableObject {
         }
     }
     
-    // MARK: reset order
-    func resetOrder() {
-        positions.removeAll()
-    }
 }

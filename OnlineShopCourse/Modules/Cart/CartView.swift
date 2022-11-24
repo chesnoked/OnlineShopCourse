@@ -14,23 +14,29 @@
 import SwiftUI
 
 struct CartView: View {
+    
     @EnvironmentObject private var authVM: AuthViewModel
     @EnvironmentObject private var shopVM: ShopViewModel
     @EnvironmentObject private var cartVM: CartViewModel
     @State private var selectedPosition: PositionModel? = nil
     @State private var showNewOrderView: Bool = false
+    
     var body: some View {
+        
         ZStack {
+            
             // new order
             newOrder
-                .onAppear {
-                    getUserDetails()
-                }
+                
             VStack(spacing: 0) {
-                // nav bar
-                navBar
+                
+                // checkout
+                checkout
+                    .padding(.top)
+                
                 // positions
                 positions
+                    .padding(.vertical)
                     .animation(.linear)
             }
         }
@@ -59,49 +65,21 @@ extension CartView {
                 .transition(.move(edge: .top))
                 .animation(.linear(duration: 0.88))
                 .zIndex(1)
+                .onAppear {
+                    getUserDetails()
+                }
         }
     }
-    // nav bar
-    private var navBar: some View {
-        HStack(spacing: 0) {
-            uploadOrder
-            Spacer()
-            total
-            Spacer()
-            resetOrder
-        }
-        .padding([.horizontal, .vertical])
-        .background(Color.palette.child.ignoresSafeArea())
-    }
-    // upload order
-    @ViewBuilder private var uploadOrder: some View {
+    // checkout
+    @ViewBuilder private var checkout: some View {
         if !cartVM.positions.isEmpty {
             Button(action: {
                 showNewOrderView.toggle()
             }, label: {
-                CloudAnimation()
+                Text("Checkout: \(cartVM.total.twoDecimalPlaces()) ₽")
+                    .glassomorphismTextFieldStyle()
             })
-        } else {
-            Image(systemName: "icloud.and.arrow.up")
-                .foregroundColor(Color.palette.parent)
-                .bold()
         }
-    }
-    // total
-    private var total: some View {
-        Text("\(cartVM.total.twoDecimalPlaces()) ₽")
-            .font(.headline)
-            .foregroundColor(Color.palette.parent)
-    }
-    // reset order
-    private var resetOrder: some View {
-        Button(action: {
-            cartVM.resetOrder()
-        }, label: {
-            Image(systemName: "arrow.triangle.2.circlepath")
-                .foregroundColor(Color.palette.parent)
-                .bold()
-        })
     }
     // positions
     private var positions: some View {
@@ -118,6 +96,5 @@ extension CartView {
                 }
             }
         }
-        .padding(.vertical)
     }
 }

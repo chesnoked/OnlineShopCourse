@@ -246,6 +246,7 @@ extension UploadNewProductView {
             Button(action: {
                 if let product = shopVM.setProduct() {
                     shopVM.uploadProduct(product: product)
+//                    shopVM.testing(count: 100, deadline: 300)
                 }
             }, label: {
                 CloudAnimation()

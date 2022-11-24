@@ -372,4 +372,40 @@ class ShopViewModel: ObservableObject {
         newProduct.images.removeAll()
     }
     
+    // MARK: testing func
+    func testing(count: UInt8, deadline: Double) {
+        guard let product = setProduct() else { return }
+        uploadProductStatus = ImageStatus.ok
+        progressViewLoader(deadLine: deadline)
+        for step in (1...count) {
+            let product = ProductModel(article: "000000\(step)",
+                                       date: Date(),
+                                       isFavorites: false,
+                                       category: Categories.allCases.randomElement()!,
+                                       brand: Brands.allCases.randomElement()!,
+                                       name: "Product \(step)",
+                                       description: product.description,
+                                       cost: Double((1200...100000).randomElement()!),
+                                       images: product.images,
+                                       mainImage: product.images.randomElement()!)
+            
+            productDataService.uploadProductData(product: product) { result in
+                switch result {
+                case .success(let product):
+                    print("№ : \(step) : successfully uploaded.")
+                    self.productImageService.uploadAllProductImages(product: product) { result in
+                        switch result {
+                        case .success(_):
+                            break
+                        case .failure(_):
+                            break
+                        }
+                    }
+                case .failure(_):
+                    break
+                }
+            }
+        }
+    }
+    
 }

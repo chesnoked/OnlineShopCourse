@@ -28,9 +28,10 @@ struct OnlineShopView: View {
             VStack(spacing: 0) {
                 // pages
                 pages
-                Spacer(minLength: 10)
+                Spacer()
                 // tab bar
                 tabBar
+                    .padding(.vertical)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -58,13 +59,14 @@ extension OnlineShopView {
             ForEach(TabItems.allCases, id: \.self) { tabItem in
                 ZStack {
                     if selectedTab == tabItem {
-                        RoundedRectangle(cornerRadius: 5)
+                        Circle()
                             .fill(Color.palette.child)
                             .matchedGeometryEffect(id: "tabs", in: tabBarNameSpace)
                             .frame(width: UIScreen.main.bounds.width / 6)
                     }
                     Image(systemName: tabItem.rawValue)
                         .foregroundColor(selectedTab == tabItem ? Color.palette.parent : Color.palette.child)
+                        .glassomorphismTextFieldStyle()
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .onTapGesture {
