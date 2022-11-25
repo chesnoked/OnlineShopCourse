@@ -16,7 +16,8 @@ import SwiftUI
 struct ShopView: View {
     
     @EnvironmentObject private var shopVM: ShopViewModel
-    @State private var showContextMenu: Bool = true
+    @State private var showCategoriesContextMenu: Bool = false
+    @State private var showBrandsContextMenu: Bool = false
     @State private var selectedProduct: ProductModel? = nil
     @State private var showUploadNewProductView: Bool = false
     @State private var trigger: Bool = false
@@ -39,25 +40,19 @@ struct ShopView: View {
                 
                 
                 // shop bar
-                ShopBarView()
+                ShopBarView(showCategoriesContextMenu: $showCategoriesContextMenu, showBrandsContextMenu: $showBrandsContextMenu)
                     .padding(.vertical)
                     .padding(.bottom)
             }
             
             // context menus
             ZStack(alignment: .bottom) {
-                if showContextMenu {
-                    if shopVM.shopBarSelectedOption == .byCategory {
-                        categoriesContextMenu
-                    }
-                    if shopVM.shopBarSelectedOption == .byBrand {
-                        brandsContextMenu
-                    }
+                if shopVM.shopBarSelectedOption == .byCategory && showCategoriesContextMenu {
+                    categoriesContextMenu
                 }
-                // hide button
-                hideButton
-                    .opacity(shopVM.shopBarSelectedOption == .byCategory || shopVM.shopBarSelectedOption == .byBrand ? 1.0 : 0.0)
-                    .padding(.bottom)
+                if shopVM.shopBarSelectedOption == .byBrand && showBrandsContextMenu {
+                    brandsContextMenu
+                }
             }
             .padding(.bottom)
             .padding(.bottom)
@@ -138,6 +133,9 @@ extension ShopView {
                 }
             }
         }
+        .onDisappear {
+            showCategoriesContextMenu = false
+        }
     }
     // brands context menu
     private var brandsContextMenu: some View {
@@ -156,16 +154,8 @@ extension ShopView {
                 }
             }
         }
-    }
-    // hide button
-    private var hideButton: some View {
-        Button(action: {
-            showContextMenu.toggle()
-        }, label: {
-            Image(systemName: showContextMenu ? "chevron.compact.down" : "chevron.compact.up")
-                .font(.caption2)
-                .bold()
-                .foregroundColor(Color.palette.child)
-        })
+        .onDisappear {
+            showBrandsContextMenu = false
+        }
     }
 }

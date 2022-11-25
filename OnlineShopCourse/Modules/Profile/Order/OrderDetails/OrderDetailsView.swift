@@ -20,10 +20,9 @@ struct OrderDetailsView: View {
             VStack(spacing: 0) {
                 OrderPositionView(order: $order)
                 positions
-                    .padding(.vertical)
+                    .padding([.horizontal, .vertical])
             }
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.palette.parent.ignoresSafeArea())
     }
 }

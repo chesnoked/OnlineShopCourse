@@ -24,6 +24,8 @@ enum ShopBarOptions: String, CaseIterable {
 
 struct ShopBarView: View {
     @EnvironmentObject private var shopVM: ShopViewModel
+    @Binding var showCategoriesContextMenu: Bool
+    @Binding var showBrandsContextMenu: Bool
     @Namespace private var shopBarNameSpace
     var body: some View {
         if shopVM.shopBarSelectedOption == .search {
@@ -53,6 +55,8 @@ extension ShopBarView {
                     withAnimation(.spring()) {
                         shopVM.shopBarSelectedOption = option
                     }
+                    if shopVM.shopBarSelectedOption == .byCategory { showCategoriesContextMenu.toggle() }
+                    if shopVM.shopBarSelectedOption == .byBrand { showBrandsContextMenu.toggle() }
                 }
             }
         }

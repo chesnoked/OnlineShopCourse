@@ -43,7 +43,6 @@ struct OrderDetailsPositionView: View {
             }
         }
         .padding()
-        .frame(width: Settings.shared.positionWidth, alignment: .leading)
         .background(Color.palette.child.cornerRadius(5))
     }
     // get product

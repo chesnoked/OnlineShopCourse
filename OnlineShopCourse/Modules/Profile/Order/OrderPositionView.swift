@@ -37,7 +37,6 @@ struct OrderPositionView: View {
             }
         }
         .padding()
-        .frame(maxWidth: .infinity)
         .background(Color.palette.child.cornerRadius(5))
     }
 }
