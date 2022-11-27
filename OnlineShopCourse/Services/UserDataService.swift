@@ -34,20 +34,23 @@ class UserDataService {
     
     // MARK: download products favorite list from user personal account on Firebase Firestore
     func downloadFavoriteList(completion: @escaping (Result<[String], Error>) -> Void) {
-        guard let user = currentUser else { return }
-        let favoriteList = users.document(user.email).collection("favorites")
-        favoriteList.getDocuments { querySnap, error in
-            guard let querySnap = querySnap else {
-                if let error = error {
-                    completion(.failure(error))
+        if let user = currentUser {
+            let favoriteList = users.document(user.email).collection("favorites")
+            favoriteList.getDocuments { querySnap, error in
+                guard let querySnap = querySnap else {
+                    if let error = error {
+                        completion(.failure(error))
+                    }
+                    return
                 }
-                return
+                var list: [String] = []
+                for document in querySnap.documents {
+                    list.append(document.documentID)
+                }
+                completion(.success(list))
             }
-            var list: [String] = []
-            for document in querySnap.documents {
-                list.append(document.documentID)
-            }
-            completion(.success(list))
+        } else {
+            completion(.success([]))
         }
     }
     

@@ -15,7 +15,8 @@ struct PositionModel: Identifiable {
     let product: ProductModel
     var amount: UInt8
     var cost: Double {
-        return product.cost * Double(amount)
+        guard let productCost = product.cost else { return 0 }
+        return productCost * Double(amount)
     }
     
     init(product: ProductModel, amount: UInt8) {

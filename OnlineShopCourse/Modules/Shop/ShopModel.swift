@@ -34,11 +34,11 @@ struct ProductModel: Identifiable {
     let brand: Brands?
     let name: String?
     let description: String?
-    let cost: Double
+    let cost: Double?
     var images: [UIImage]
     let mainImage: UIImage?
     
-    init(article: String, date: Date = Date(), isFavorites: Bool = false, category: Categories? = nil, brand: Brands? = nil, name: String? = nil, description: String? = nil, cost: Double, images: [UIImage] = [], mainImage: UIImage? = nil) {
+    init(article: String, date: Date = Date(), isFavorites: Bool = false, category: Categories? = nil, brand: Brands? = nil, name: String? = nil, description: String? = nil, cost: Double? = nil, images: [UIImage] = [], mainImage: UIImage? = nil) {
         self.id = article
         self.date = date
         self.isFavorites = isFavorites
@@ -63,7 +63,7 @@ struct ProductModel: Identifiable {
         data["brand"] = brand?.rawValue ?? ""
         data["name"] = name ?? ""
         data["description"] = description ?? ""
-        data["cost"] = cost
+        data["cost"] = cost ?? 0
         return data
     }
 }

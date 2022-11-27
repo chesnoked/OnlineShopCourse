@@ -30,7 +30,7 @@ class ShopViewModel: ObservableObject {
     
     @Published var shopBarSelectedOption: ShopBarOptions = .byName
     @Published var searchText: String = ""
-    @Published var currentProducts: [ProductModel] = []
+    @Published var currentProducts: [String] = []
     private var cancellables = Set<AnyCancellable>()
     
     private var categoriesSubscription: AnyCancellable?
@@ -39,37 +39,13 @@ class ShopViewModel: ObservableObject {
     private var brandsSubscription: AnyCancellable?
     @Published var selectedBrand: Brands? = nil
     
-    // MARK: filter by category
-    private func filterByCategory() {
-        categoriesSubscription = $selectedCategory
-            .combineLatest($originalProducts)
-            .map({ (category, products) -> [ProductModel] in
-                guard let selectedCategory = category else { return self.sortedByCategories(products: products) }
-                return products.filter { product in
-                    guard let productCategory = product.category else { return false }
-                    return productCategory == selectedCategory
-                }
-            })
-            .sink(receiveValue: { filteredProducts in
-                self.currentProducts = filteredProducts
-            })
-    }
-    
-    // MARK: filter by brand
-    private func filterByBrand() {
-        brandsSubscription = $selectedBrand
-            .combineLatest($originalProducts)
-            .debounce(for: .seconds(0.5), scheduler: DispatchQueue.main)
-            .map { (brand, products) -> [ProductModel] in
-                guard let selectedBrand = brand else { return self.sortedByBrands(products: products) }
-                return products.filter { product in
-                    guard let productBrand = product.brand else { return false }
-                    return productBrand == selectedBrand
-                }
-            }
-            .sink { filteredProducts in
-                self.currentProducts = filteredProducts
-            }
+    // MARK: get all products articles
+    private func getArticles(products: [ProductModel]) -> [String] {
+        var articles: [String] = []
+        products.forEach { product in
+            articles.append(product.id)
+        }
+        return articles
     }
     
     // MARK: shop bar actions
@@ -77,14 +53,14 @@ class ShopViewModel: ObservableObject {
         $shopBarSelectedOption
             .combineLatest($searchText, $originalProducts)
             .debounce(for: .seconds(0.5), scheduler: DispatchQueue.main)
-            .map { (option, searchText, products) -> [ProductModel] in
+            .map { (option, searchText, products) -> [String] in
                 if option != .byCategory { self.categoriesSubscription?.cancel() }
                 if option != .byBrand { self.brandsSubscription?.cancel() }
                 switch option {
                 case .byFavorites:
-                    return self.filterByFavorites(products: products)
+                    return self.getArticles(products: self.filterByFavorites(products: products))
                 case .byName:
-                    return self.sortedByName(products: products)
+                    return self.getArticles(products: self.sortedByName(products: products))
                 case .byCategory:
                     self.filterByCategory()
                     return self.currentProducts
@@ -92,9 +68,9 @@ class ShopViewModel: ObservableObject {
                     self.filterByBrand()
                     return self.currentProducts
                 case .news:
-                    return self.sortedByDate(products: products)
+                    return self.getArticles(products: self.sortedByDate(products: products))
                 case .search:
-                    return self.searchProducts(searchText: searchText, products: products)
+                    return self.getArticles(products: self.searchProducts(searchText: searchText, products: products))
                 }
             }
             .sink { filteredProducts in
@@ -118,6 +94,33 @@ class ShopViewModel: ObservableObject {
         }
     }
     
+    // MARK: sorted by categories
+    private func sortedByCategories(products: [ProductModel]) -> [ProductModel] {
+        return products.sorted { lastProduct, nextProduct in
+            guard let categoryLastProduct = lastProduct.category?.rawValue,
+                  let categoryNextProduct = nextProduct.category?.rawValue
+            else { return false }
+            return categoryLastProduct < categoryNextProduct
+        }
+    }
+    
+    // MARK: filter by category
+    private func filterByCategory() {
+        categoriesSubscription = $selectedCategory
+            .combineLatest($originalProducts)
+            .debounce(for: .seconds(0.5), scheduler: DispatchQueue.main)
+            .map({ (category, products) -> [String] in
+                guard let selectedCategory = category else { return self.getArticles(products: self.sortedByCategories(products: products)) }
+                return self.getArticles(products: products.filter { product in
+                    guard let productCategory = product.category else { return false }
+                    return productCategory == selectedCategory
+                })
+            })
+            .sink(receiveValue: { filteredProducts in
+                self.currentProducts = filteredProducts
+            })
+    }
+    
     // MARK: sorted by brands
     private func sortedByBrands(products: [ProductModel]) -> [ProductModel] {
         return products.sorted { lastProduct, nextProduct in
@@ -128,14 +131,21 @@ class ShopViewModel: ObservableObject {
         }
     }
     
-    // MARK: sorted by categories
-    private func sortedByCategories(products: [ProductModel]) -> [ProductModel] {
-        return products.sorted { lastProduct, nextProduct in
-            guard let categoryLastProduct = lastProduct.category?.rawValue,
-                  let categoryNextProduct = nextProduct.category?.rawValue
-            else { return false }
-            return categoryLastProduct < categoryNextProduct
-        }
+    // MARK: filter by brand
+    private func filterByBrand() {
+        brandsSubscription = $selectedBrand
+            .combineLatest($originalProducts)
+            .debounce(for: .seconds(0.5), scheduler: DispatchQueue.main)
+            .map { (brand, products) -> [String] in
+                guard let selectedBrand = brand else { return self.getArticles(products: self.sortedByBrands(products: products)) }
+                return self.getArticles(products: products.filter { product in
+                    guard let productBrand = product.brand else { return false }
+                    return productBrand == selectedBrand
+                })
+            }
+            .sink { filteredProducts in
+                self.currentProducts = filteredProducts
+            }
     }
     
     // MARK: sorted by date
@@ -274,25 +284,6 @@ class ShopViewModel: ObservableObject {
         }
     }
     
-    // MARK: get product index in products
-    func getProductIndex(product: ProductModel) -> Int {
-        guard let index = originalProducts.firstIndex(where: { oneProduct in product.id == oneProduct.id })
-        else { return 0 }
-        return index
-    }
-    
-    // MARK: add product to favorites
-    func addToFavorites(product: ProductModel) {
-        userDataService.addProductToFavorites(product: product) { result in
-            switch result {
-            case .success(let product):
-                self.originalProducts[self.getProductIndex(product: product)].isFavorites.toggle()
-            case .failure(_):
-                break
-            }
-        }
-    }
-    
     // MARK: get product images
     func getProductImages(product: ProductModel) {
         productImageService.downloadImagesLinks(product: product) { result in
@@ -308,6 +299,25 @@ class ShopViewModel: ObservableObject {
                         }
                     }
                 }
+            case .failure(_):
+                break
+            }
+        }
+    }
+    
+    // MARK: get product index in products
+    func getProductIndex(product: ProductModel) -> Int {
+        guard let index = originalProducts.firstIndex(where: { oneProduct in product.id == oneProduct.id })
+        else { return 0 }
+        return index
+    }
+    
+    // MARK: add product to favorites
+    func addToFavorites(product: ProductModel) {
+        userDataService.addProductToFavorites(product: product) { result in
+            switch result {
+            case .success(let product):
+                self.originalProducts[self.getProductIndex(product: product)].isFavorites.toggle()
             case .failure(_):
                 break
             }

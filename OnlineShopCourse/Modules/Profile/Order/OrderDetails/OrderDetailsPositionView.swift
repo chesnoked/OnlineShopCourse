@@ -95,7 +95,7 @@ extension OrderDetailsPositionView {
     }
     // product cost
     private var productCost: some View {
-        Text("\(position.product.cost.twoDecimalPlaces()) ₽")
+        Text("\((position.product.cost ?? 0).twoDecimalPlaces()) ₽")
             .font(.callout)
             .foregroundColor(Color.palette.parent)
     }

@@ -106,7 +106,7 @@ extension ProductDetailView {
     }
     // product cost
     private var productCost: some View {
-        Text("\(product.cost.twoDecimalPlaces()) ₽")
+        Text("\((product.cost ?? 0).twoDecimalPlaces()) ₽")
             .font(.callout)
             .bold()
             .foregroundColor(Color.palette.child)

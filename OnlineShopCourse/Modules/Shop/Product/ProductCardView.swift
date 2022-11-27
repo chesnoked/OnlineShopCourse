@@ -15,7 +15,7 @@ import SwiftUI
 
 struct ProductCardView: View {
     @EnvironmentObject private var shopVM: ShopViewModel
-    let product: ProductModel
+    @Binding var product: ProductModel
     var body: some View {
         VStack(alignment: .leading, spacing: 5) {
             // product image
@@ -74,7 +74,7 @@ extension ProductCardView {
     }
     // product cost
     private var productCost: some View {
-        Text("\(product.cost.twoDecimalPlaces()) ₽")
+        Text("\((product.cost ?? 0).twoDecimalPlaces()) ₽")
             .font(.callout)
             .bold()
             .foregroundColor(Color.palette.child)

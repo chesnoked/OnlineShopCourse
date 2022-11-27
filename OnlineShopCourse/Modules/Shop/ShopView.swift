@@ -62,6 +62,12 @@ struct ShopView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.palette.parent.ignoresSafeArea())
+        .overlay(alignment: .center) {
+            if shopVM.originalProducts.isEmpty {
+                ProgressView()
+                    .tint(Color.palette.child)
+            }
+        }
     }
 }
 
@@ -101,10 +107,10 @@ extension ShopView {
                       alignment: .center,
                       spacing: 15,
                       pinnedViews: []) {
-                ForEach(shopVM.currentProducts) { product in
-                    ProductCardView(product: product)
+                ForEach(shopVM.currentProducts, id: \.self) { article in
+                    ProductCardView(product: $shopVM.originalProducts[shopVM.getProductIndex(product: ProductModel(article: article))])
                         .onTapGesture {
-                            selectedProduct = product
+                            selectedProduct = ProductModel(article: article)
                         }
                 }
                 .sheet(item: $selectedProduct) { product in
