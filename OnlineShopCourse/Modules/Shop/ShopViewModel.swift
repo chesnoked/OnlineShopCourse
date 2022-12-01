@@ -224,6 +224,7 @@ class ShopViewModel: ObservableObject {
     // MARK: upload product to Firebase
     func uploadProduct(product: ProductModel) {
         loader(deadLine: 30.0)
+        productImageService.deleteProductImages(product: product)
         productDataService.uploadProductData(product: product) { result in
             switch result {
             case .success(let product):
@@ -339,6 +340,7 @@ class ShopViewModel: ObservableObject {
     // MARK: refresh shop
     func refreshShop() {
         resetProduct()
+        currentProducts.removeAll()
         originalProducts.removeAll()
         getProducts()
     }

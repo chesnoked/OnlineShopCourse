@@ -117,31 +117,16 @@ class ProductImageService {
     
     // MARK: delete all product images on Firebase Storage
     func deleteProductImages(product: ProductModel) {
-        images.child("main").child(product.id).delete { error in
-            if let _ = error {
-                // print
-                return
-            }
-            else {
-                self.images.child(product.id).listAll { storageListResult, error in
-                    guard let list = storageListResult else {
-                        if let _ = error {
-                            // print
-                        }
-                        return
-                    }
-                    list.items.forEach { link in
-                        link.delete { error in
-                            if let _ = error {
-                                // print
-                                return
-                            }
-                        }
-                    }
+        images.child("main").child(product.id).delete { _ in }
+        downloadImagesLinks(product: product) { result in
+            switch result {
+            case .success(let links):
+                links.forEach { link in
+                    link.delete { _ in }
                 }
+            case .failure(_):
+                break
             }
         }
     }
-    
-    
 }
