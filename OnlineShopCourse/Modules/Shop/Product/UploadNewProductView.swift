@@ -26,6 +26,9 @@ struct UploadNewProductView: View {
                     // upload product
                     uploadProduct
                     Spacer()
+                    // testing
+                    testing
+                        .padding(.trailing, 15)
                     // refresh shop
                     refreshShop
                 }
@@ -242,14 +245,23 @@ extension UploadNewProductView {
 extension UploadNewProductView {
     // upload product
     @ViewBuilder private var uploadProduct: some View {
-        if shopVM.productValidity {
+        if shopVM.productValidity && !shopVM.progressViewIsLoading {
             Button(action: {
                 if let product = shopVM.setProduct() {
                     shopVM.uploadProduct(product: product)
-//                    shopVM.testing(count: 100, deadline: 300)
                 }
             }, label: {
-                CloudAnimation()
+                IconAnimation(icon: "icloud.and.arrow.up")
+            })
+        }
+    }
+    // testing
+    @ViewBuilder private var testing: some View {
+        if !shopVM.newProduct.images.isEmpty && !shopVM.progressViewIsLoading {
+            Button(action: {
+                shopVM.testing(count: 10, deadline: 100)
+            }, label: {
+                IconAnimation(icon: "wrench.and.screwdriver.fill")
             })
         }
     }

@@ -15,6 +15,7 @@ import SwiftUI
 
 struct ProductCardView: View {
     @EnvironmentObject private var shopVM: ShopViewModel
+    @State private var isDeleting: Bool = false
     @Binding var product: ProductModel
     var body: some View {
         VStack(alignment: .leading, spacing: 5) {
@@ -45,6 +46,16 @@ extension ProductCardView {
                     .padding(EdgeInsets(top: 0, leading: 0, bottom: 10, trailing: 10))
             }
             .frame(width: Settings.shared.productCardSize, height: Settings.shared.productCardSize)
+            .overlay(alignment: .center) {
+                if UserDataService.shared.isAdmin {
+                    // delete button
+                    deleteButton
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
+                        .padding(EdgeInsets(top: 10, leading: 0, bottom: 0, trailing: 10))
+                    // delete status
+                    deleteStatus
+                }
+            }
         }
     }
     // add to favorites
@@ -78,5 +89,47 @@ extension ProductCardView {
             .font(.callout)
             .bold()
             .foregroundColor(Color.palette.child)
+    }
+}
+
+extension ProductCardView {
+    // func delete product
+    private func deleteProduct() {
+        isDeleting = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+            isDeleting = false
+        }
+        shopVM.deleteProduct(product: product) { result in
+            switch result {
+            case .success(_):
+                isDeleting = false
+            case .failure(_):
+                break
+            }
+        }
+    }
+    // delete button
+    private var deleteButton: some View {
+        Button(action: {
+            deleteProduct()
+        }, label: {
+            Image(systemName: "xmark.app.fill")
+                .font(.caption)
+                .bold()
+                .foregroundColor(Color.red)
+                .background(
+                    Image(systemName: "app.fill")
+                        .font(.caption)
+                        .bold()
+                        .foregroundColor(Color.black)
+                )
+        })
+    }
+    // delete status
+    @ViewBuilder private var deleteStatus: some View {
+        if isDeleting {
+            ProgressView()
+                .tint(Color.palette.child)
+        }
     }
 }

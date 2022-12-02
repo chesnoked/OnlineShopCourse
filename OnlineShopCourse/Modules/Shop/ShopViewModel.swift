@@ -233,7 +233,7 @@ class ShopViewModel: ObservableObject {
                     case .success(_):
                         self.uploadProductStatus = ImageStatus.ok
                     case .failure(_):
-                        self.deleteProduct(product: product)
+                        self.deleteProduct(product: product) { _ in }
                     }
                 }
             case .failure(_):
@@ -325,12 +325,20 @@ class ShopViewModel: ObservableObject {
         }
     }
     
+    // MARK: delete local product
+    private func deleteLocalProduct(product: ProductModel) {
+        currentProducts.removeAll { article in product.id == article }
+        originalProducts.removeAll(where: { oneProduct in product.id == oneProduct.id })
+    }
+    
     // MARK: delete product on Firebase
-    func deleteProduct(product: ProductModel) {
+    func deleteProduct(product: ProductModel, completion: @escaping (Result<ProductModel, Error>) -> Void) {
+        if product.isFavorites { addToFavorites(product: product) }
         productDataService.deleteProductData(product: product) { result in
             switch result {
             case .success(let product):
                 self.productImageService.deleteProductImages(product: product)
+                self.deleteLocalProduct(product: product)
             case .failure(_):
                 break
             }
@@ -386,7 +394,7 @@ class ShopViewModel: ObservableObject {
     
     // MARK: testing func
     func testing(count: UInt8, deadline: Double) {
-        guard let product = setProduct() else { return }
+        guard !newProduct.images.isEmpty else { return }
         uploadProductStatus = ImageStatus.ok
         progressViewLoader(deadLine: deadline)
         for step in (1...count) {
@@ -396,10 +404,10 @@ class ShopViewModel: ObservableObject {
                                        category: Categories.allCases.randomElement()!,
                                        brand: Brands.allCases.randomElement()!,
                                        name: "Product \(step)",
-                                       description: product.description,
+                                       description: "Product \(step) description.",
                                        cost: Double((1200...100000).randomElement()!),
-                                       images: product.images,
-                                       mainImage: product.images.randomElement()!)
+                                       images: newProduct.images,
+                                       mainImage: newProduct.images.randomElement()!)
             
             productDataService.uploadProductData(product: product) { result in
                 switch result {
