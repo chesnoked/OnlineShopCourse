@@ -339,6 +339,7 @@ class ShopViewModel: ObservableObject {
             case .success(let product):
                 self.productImageService.deleteProductImages(product: product)
                 self.deleteLocalProduct(product: product)
+                completion(.success(product))
             case .failure(_):
                 break
             }

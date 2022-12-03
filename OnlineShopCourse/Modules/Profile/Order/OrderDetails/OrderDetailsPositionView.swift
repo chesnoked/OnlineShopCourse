@@ -56,39 +56,49 @@ struct OrderDetailsPositionView: View {
 extension OrderDetailsPositionView {
     // position image
     @ViewBuilder private var positionImage: some View {
-        if let image = getProduct()?.mainImage {
-            Image(uiImage: image)
-                .resizable()
-                .frame(width: 50, height: 50)
-                .aspectRatio(contentMode: .fill)
-                .clipShape(Circle())
-                .overlay {
-                    Circle()
-                        .stroke (
-                            Color.palette.parent
-                            ,
-                            lineWidth: 0.55
-                        )
+        Group {
+            if let image = getProduct()?.mainImage {
+                Image(uiImage: image)
+                    .resizable()
+                    .frame(width: 50, height: 50)
+                    .aspectRatio(contentMode: .fill)
+                    .clipShape(Circle())
+            } else {
+                VStack(spacing: 0) {
+                    Text("нет на")
+                    Text("складе")
                 }
+                .font(.caption2)
+                .bold()
+                .frame(width: 50, height: 50)
+            }
+        }
+        .overlay {
+            Circle()
+                .stroke (
+                    Color.palette.parent
+                    ,
+                    lineWidth: 1.0
+                )
         }
     }
     // product category
     private var productCategory: some View {
-        Text(getProduct()?.category?.rawValue ?? "")
+        Text(position.product.category?.rawValue ?? "")
             .font(.caption)
             .bold()
             .foregroundColor(Color.palette.parent)
     }
     // product brand
     private var productBrand: some View {
-        Text(getProduct()?.brand?.rawValue ?? "")
+        Text(position.product.brand?.rawValue ?? "")
             .font(.caption)
             .bold()
             .foregroundColor(Color.palette.parent)
     }
     // product name
     private var productName: some View {
-        Text(getProduct()?.name ?? "")
+        Text(position.product.name ?? "")
             .lineLimit(1)
             .font(.headline)
             .foregroundColor(Color.palette.parent)

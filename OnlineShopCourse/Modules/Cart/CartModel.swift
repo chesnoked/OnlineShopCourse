@@ -28,18 +28,30 @@ struct PositionModel: Identifiable {
         let data = doc.data()
         
         guard let productArticle = data["product_article"] as? String,
+              let productCategoryRawValue = data["product_category"] as? String,
+              let productCategory = Categories.init(rawValue: productCategoryRawValue),
+              let productBrandRawValue = data["product_brand"] as? String,
+              let productBrand = Brands.init(rawValue: productBrandRawValue),
+              let productName = data["product_name"] as? String,
               let productCost = data["product_cost"] as? Double,
               let amount = data["amount"] as? UInt8
         else { return nil }
         
-        self.product = ProductModel(article: productArticle, cost: productCost)
+        self.product = ProductModel(article: productArticle,
+                                    category: productCategory,
+                                    brand: productBrand,
+                                    name: productName,
+                                    cost: productCost)
         self.amount = amount
     }
     
     var data: [String:Any] {
         var data: [String:Any] = [:]
         data["product_article"] = product.id
-        data["product_cost"] = product.cost
+        data["product_category"] = product.category?.rawValue ?? ""
+        data["product_brand"] = product.brand?.rawValue ?? ""
+        data["product_name"] = product.name ?? ""
+        data["product_cost"] = product.cost ?? 0
         data["amount"] = amount
         return data
     }
