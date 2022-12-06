@@ -21,6 +21,9 @@ enum TabItems: String, CaseIterable {
 }
 
 struct OnlineShopView: View {
+    @StateObject private var shopVM: ShopViewModel = ShopViewModel()
+    @StateObject private var cartVM: CartViewModel = CartViewModel()
+    @StateObject private var profileVM: ProfileViewModel = ProfileViewModel()
     @Namespace private var tabBarNameSpace
     @State private var selectedTab: TabItems = .shop
     var body: some View {
@@ -36,6 +39,9 @@ struct OnlineShopView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.palette.parent.ignoresSafeArea())
+        .environmentObject(shopVM)
+        .environmentObject(cartVM)
+        .environmentObject(profileVM)
     }
 }
 

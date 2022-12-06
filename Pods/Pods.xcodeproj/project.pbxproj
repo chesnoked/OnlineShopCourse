@@ -16080,7 +16080,7 @@
 		BF5CF509CD58379BF28DF191D02E81BE /* FBLPromise+Always.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "FBLPromise+Always.h"; path = "Sources/FBLPromises/include/FBLPromise+Always.h"; sourceTree = "<group>"; };
 		BF64EF708E2D6494F7749D8C47A20E4E /* struct.upb.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = struct.upb.h; path = "src/core/ext/upb-generated/google/protobuf/struct.upb.h"; sourceTree = "<group>"; };
 		BF83947E6B099E916DAB0E667ACCE8B6 /* frame_window_update.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = frame_window_update.h; path = src/core/ext/transport/chttp2/transport/frame_window_update.h; sourceTree = "<group>"; };
-		BF96B57ADE05E8909F823BDF6868B3E3 /* abseil */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = abseil; path = absl.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BF96B57ADE05E8909F823BDF6868B3E3 /* absl.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = absl.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFA5E8CD199870839ED4867D12D94381 /* connector.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = connector.h; path = src/core/ext/filters/client_channel/connector.h; sourceTree = "<group>"; };
 		BFA6DE6B3B656365B023F33B612A0200 /* eds.upbdefs.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = eds.upbdefs.h; path = "src/core/ext/upbdefs-generated/envoy/service/endpoint/v3/eds.upbdefs.h"; sourceTree = "<group>"; };
 		BFA8487594B609C162D461F287369320 /* client_channel.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = client_channel.h; path = src/core/ext/filters/client_channel/client_channel.h; sourceTree = "<group>"; };
@@ -22847,7 +22847,7 @@
 		E48443097559FA1298FDDAFB00BC445C /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				BF96B57ADE05E8909F823BDF6868B3E3 /* abseil */,
+				BF96B57ADE05E8909F823BDF6868B3E3 /* absl.framework */,
 				514D7742C6CBB0BDBD9984AEE97DDFDE /* BoringSSL-GRPC */,
 				81418C93A311F0492F62A8F88C3BD66B /* FirebaseAppCheckInterop */,
 				43B1E4CD7B30B9FD278100133C2AC788 /* FirebaseAuth */,
@@ -26549,7 +26549,7 @@
 			);
 			name = abseil;
 			productName = absl;
-			productReference = BF96B57ADE05E8909F823BDF6868B3E3 /* abseil */;
+			productReference = BF96B57ADE05E8909F823BDF6868B3E3 /* absl.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		8D7F5D5DD528D21A72DC87ADA5B12E2D /* GoogleUtilities */ = {
@@ -30343,7 +30343,7 @@
 				GCC_PREFIX_HEADER = "Target Support Files/abseil/abseil-prefix.pch";
 				INFOPLIST_FILE = "Target Support Files/abseil/abseil-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -30377,7 +30377,7 @@
 				GCC_PREFIX_HEADER = "Target Support Files/abseil/abseil-prefix.pch";
 				INFOPLIST_FILE = "Target Support Files/abseil/abseil-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

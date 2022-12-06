@@ -9,13 +9,8 @@ import Foundation
 
 extension Date {
     var shortFormat: String {
-        self.formatted(
-            .dateTime
-                .day(.twoDigits)
-                .month(.abbreviated)
-//                .year(.twoDigits)
-                .minute(.twoDigits)
-                .hour(.conversationalDefaultDigits(amPM: .omitted))
-        )
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd MMMM HH:mm"
+        return dateFormatter.string(from: self)
     }
 }

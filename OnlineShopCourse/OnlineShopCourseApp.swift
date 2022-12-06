@@ -16,9 +16,9 @@ struct OnlineShopCourseApp: App {
     @AppStorage("current_user") private var currentUser: String = "new_user"
     
     @StateObject private var authVM: AuthViewModel = AuthViewModel()
-    @StateObject private var shopVM: ShopViewModel = ShopViewModel()
-    @StateObject private var cartVM: CartViewModel = CartViewModel()
-    @StateObject private var profileVM: ProfileViewModel = ProfileViewModel()
+//    @StateObject private var shopVM: ShopViewModel = ShopViewModel()
+//    @StateObject private var cartVM: CartViewModel = CartViewModel()
+//    @StateObject private var profileVM: ProfileViewModel = ProfileViewModel()
     
     var body: some Scene {
         WindowGroup {
@@ -33,9 +33,9 @@ struct OnlineShopCourseApp: App {
                 }
             }
             .environmentObject(authVM)
-            .environmentObject(shopVM)
-            .environmentObject(cartVM)
-            .environmentObject(profileVM)
+//            .environmentObject(shopVM)
+//            .environmentObject(cartVM)
+//            .environmentObject(profileVM)
             .statusBarHidden(true)
         }
     }

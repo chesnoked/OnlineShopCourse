@@ -104,7 +104,7 @@ class CartViewModel: ObservableObject {
     
     // MARK: upload order
     func uploadOrder() {
-        loader(deadLine: 15.0)
+        loader(deadLine: 30.0)
         guard let user = getUser() else { return }
         userDataService.uploadUserData(user: user) { result in
             switch result {
@@ -114,6 +114,7 @@ class CartViewModel: ObservableObject {
                     switch result {
                     case .success(let order):
                         self.uploadOrderStatus = ImageStatus.ok
+                        self.positions.removeAll()
                         print("Successfully uploaded order: \(order.id)")
                     case .failure(_):
                         break

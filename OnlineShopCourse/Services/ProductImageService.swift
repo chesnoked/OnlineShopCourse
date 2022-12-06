@@ -40,7 +40,7 @@ class ProductImageService {
     // MARK: upload product main image to Firebase Storage
     func uploadProductMainImage(product: ProductModel, completion: @escaping (Result<ProductModel, Error>) -> Void) {
         guard let image = product.mainImage,
-              let imageData = image.jpegData(compressionQuality: 0.5)
+              let imageData = image.jpegData(compressionQuality: 0.12)
         else { return }
         let metadata = StorageMetadata()
         metadata.contentType = "image/jpg"
@@ -102,7 +102,7 @@ class ProductImageService {
         let metadata = StorageMetadata()
         metadata.contentType = "image/jpg"
         product.images.forEach { image in
-            guard let imageData = image.jpegData(compressionQuality: 0.5) else { return }
+            guard let imageData = image.jpegData(compressionQuality: 0.12) else { return }
             images.child(product.id).child(UUID().uuidString).putData(imageData, metadata: metadata) { metadata, error in
                 guard let _ = metadata else {
                     if let error = error {

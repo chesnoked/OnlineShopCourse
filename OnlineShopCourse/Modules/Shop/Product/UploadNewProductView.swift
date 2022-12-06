@@ -259,7 +259,7 @@ extension UploadNewProductView {
     @ViewBuilder private var testing: some View {
         if !shopVM.newProduct.images.isEmpty && !shopVM.progressViewIsLoading {
             Button(action: {
-                shopVM.testing(count: 10, deadline: 100)
+                shopVM.testing(count: 10, deadline: 30)
             }, label: {
                 IconAnimation(icon: "wrench.and.screwdriver.fill")
             })
